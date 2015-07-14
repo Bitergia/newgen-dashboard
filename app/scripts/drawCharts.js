@@ -202,7 +202,7 @@ function draw_charts () {
             document.dispatchEvent(timeRangeEvent);
         }else{
             $("#filterFrom").text(date_min.getFullYear()+'-'+parseInt(date_min.getMonth()+1)+" //");
-            $("#filterTo").text(" "+date_max+'-'+parseInt(date_max.getMonth()+1));
+            $("#filterTo").text(" "+date_max.getFullYear()+'-'+parseInt(date_max.getMonth()+1));
         }
     });
 
@@ -375,10 +375,10 @@ function draw_charts () {
         .dimension(ndx)
         .group(all)
         .html({
-            some:'<strong>%filter-count</strong> commits out of <strong>%total-count</strong>'+
-            ' <button type="button" class="btn btn-primary btn-sm" onclick="reset()">Reset all filters</button>',
-            all:'<strong>%filter-count</strong> commits out of <strong>%total-count</strong>'+
-            ' <button type="button" class="btn btn-primary btn-sm" onclick="reset()">Reset all filters</button>'
+            some:'<span style="font-size:110%"><strong>%filter-count</strong> commits out of <strong>%total-count</strong>'+
+            ' <button type="button" class="btn btn-primary btn-sm" onclick="reset()">Reset all filters</button></span>',
+            all:'<span style="font-size:110%"><strong>%filter-count</strong> commits out of <strong>%total-count</strong>'+
+            ' <button type="button" class="btn btn-primary btn-sm" onclick="reset()">Reset all filters</button></span>'
         });
 
 
