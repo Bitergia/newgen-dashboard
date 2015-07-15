@@ -32,3 +32,15 @@ h1, h2, h3, h4, h5 , h6 {
 #tableRepo .dc-table-column._0, #tableOrg .dc-table-column._0, #tableAuth .dc-table-column._0 {
   cursor: pointer;
 }
+/*
+#commitsChart {
+  width: 64%;
+}
+
+#commitsHoursChart, #commitsTZChart {
+  width: 36%;
+}
+
+#repoPieChart, #compPieChart, #authPieChart {
+  width: 33%;
+}*/

@@ -5,9 +5,15 @@ function draw_charts () {
     bot_dim = ndx.dimension(function(d){
         return d.bot;
     });
+
+    proj_dim = ndx.dimension(function(d){
+        return ""+d.proj_name;
+    });
+
     var org_dim = ndx.dimension(function(d){
         return d.org_name;
     });
+
     var org_grp = org_dim.group();
     
 		var width_org_chart = document.getElementById("compPieChart").offsetWidth;
@@ -63,7 +69,7 @@ function draw_charts () {
     });
 
     var repo_dim = ndx.dimension(function(d){
-        return d.repo_name;
+        return ""+d.repo_name;
     });
     var repo_grp = repo_dim.group();
     
@@ -120,7 +126,7 @@ function draw_charts () {
     });
 
     var auth_dim = ndx.dimension(function(d){
-        return d.auth_name;
+        return ""+d.auth_name;
     });
     var width_auth_grp = document.getElementById("authPieChart").offsetWidth;
     var auth_grp = auth_dim.group();
@@ -174,6 +180,7 @@ function draw_charts () {
         }
         window.history.replaceState("object or string", "Title", writeURL());
     });
+
     var months_dim = ndx.dimension(function(d){
         return d.month;
     });
@@ -211,7 +218,7 @@ function draw_charts () {
     });
 
     var hours_dim = ndx.dimension(function(d){
-        return d.hour;
+        return ""+d.hour;
     });
 	var width_hours_chart = document.getElementById("commitsHoursChart").offsetWidth;
     var commits_hour = hours_dim.group();
@@ -232,7 +239,7 @@ function draw_charts () {
 		document.dispatchEvent(timeRangeEvent);
     });
     var tz_dim = ndx.dimension(function(d){
-        return d.tz;
+        return ""+d.tz;
     });
 
 	var width_tz_chart = document.getElementById("commitsTZChart").offsetWidth;
@@ -256,10 +263,10 @@ function draw_charts () {
 
     repo = [];
 	repoDim = ndx.dimension(function (d) {
-		if (repo.indexOf(d.repo_name) == -1) {
-			repo.push(d.repo_name);
+		if (repo.indexOf(""+d.repo_name) == -1) {
+			repo.push(""+d.repo_name);
 		}
-		var i = repo.indexOf(d.repo_name);
+		var i = repo.indexOf(""+d.repo_name);
 	    return repo[i];
 	});
 	repoGrp = repoDim.group();
@@ -344,6 +351,7 @@ function draw_charts () {
 		var i = auth.indexOf(d.auth_name);
 	    return auth[i];
 	});
+
 	authGrp = authDim.group();
     tableAuth = dc.dataTable('#tableAuth', 'table');
     var authOrderKey = -1;

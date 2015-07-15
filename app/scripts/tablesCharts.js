@@ -106,7 +106,7 @@ function tableUpdate(type) {
         ]);
 }
 
-function draw_messages_table (ndx) {
+function draw_messages_table () {
     var dateDim = ndx.dimension(function (d) {
         return d.date;
     });

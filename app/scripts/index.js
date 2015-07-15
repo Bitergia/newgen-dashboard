@@ -3,9 +3,11 @@ var dc_commits = [];
 var dc_commits_month = [];
 var auth_names = {};
 var repo_names = {};
+var proj_names = {};
 var bots = {};
 var messages_text = {};
 var bot_dim;
+var proj_dim;
 
 var org_chart;
 var repo_chart;
@@ -15,6 +17,7 @@ var ndx;
 var repo_array = [];
 var auth_array = [];
 var org_array = [];
+var proj_array = ['All'];
 
 var repoFilters = [];
 var deveFilters = [];
@@ -26,7 +29,6 @@ var getting_commits =  $.getJSON('json/scm-commits.json');
 var getting_orgs = $.getJSON('json/scm-orgs.json');
 var getting_auths = $.getJSON('json/scm-persons.json');
 var getting_repos = $.getJSON('json/scm-repos.json');
-var getting_messages = $.getJSON('json/scm-messages.json');
 var getting_configuration = $.getJSON('json/config.json');
 
 var pieClickEvent = new Event('table');
@@ -40,7 +42,9 @@ function load_commits (commits, orgs, repos, auths) {
     });
     repos.values.forEach(function (value) {
         repo_names[value[0]] = value[1];
+        proj_names[value[0]] = value[3];
         repo_array.push(value[1]);
+        proj_array.push(value[3]);
         entriesdb.push(value[1]);
     });
     auths.values.forEach(function (value) {
@@ -63,6 +67,7 @@ function load_commits (commits, orgs, repos, auths) {
             } else if (name == 'repo') {
                 record[name] = value[index];
                 record.repo_name = repo_names[value[index]];
+                record.proj_name = proj_names[value[index]];
             } else if (name == 'author') {
                 record[name] = value[index];
                 record.auth_name = auth_names[value[index]];
@@ -150,15 +155,16 @@ function writeURL(){
             deveStrUrl+=element+'+'
         }
     })
-    var projStrUrl='proj='
-/*    projFilters.forEach(function(element){
+/*    var projStrUrl='proj='
+    projFilters.forEach(function(element){
         if(projFilters.indexOf(element)==projFilters.length-1){
             projStrUrl+=element
         }else{
             projStrUrl+=element+'+'
         }
     })*/
-    return '?'+projStrUrl+'&'+repoStrUrl+'&'+deveStrUrl+'&'+compStrUrl
+//    return '?'+projStrUrl+'&'+repoStrUrl+'&'+deveStrUrl+'&'+compStrUrl
+    return '?'+repoStrUrl+'&'+deveStrUrl+'&'+compStrUrl;
 }
 /********************** Read generated URL ****************************/
 function readURL(){
@@ -238,26 +244,30 @@ $('#searchForm').keyup(function(e){
         }
     }
 });
+$("#projectForm").autocomplete({
+    source: proj_array,
+    minLength: 0
+}).on('focus', function() { $(this).keydown(); });
 
-/*$("#projectForm").change(function(e){
-    if($(this).val() == "All"){
-        dimProj.filterAll()
-        projFilters = []
-    }else{
-        dimProj.filter($(this).val())
-        projFilters[0] = ($(this).val())
+$("#projectForm").keyup(function(e){
+    if(e.keyCode == 13){
+        var entrie = this.value;
+        if(entrie != ""){
+            this.value = ""
+            if (entrie == 'All') {
+                proj_dim.filterAll();
+            } else {
+                proj_dim.filter(entrie);
+            }
+            document.dispatchEvent(pieClickEvent);
+        }
     }
-    dc.redrawAll('time');
-    dc.redrawAll('other');
-    tableUpdate('click');
-    dc.redrawAll('tables');
-    dc.redrawAll('commitsTable');
-    window.history.replaceState("object or string", "Title", writeURL());
 });
-*/
+
 function reset(){
     $.when(
         bot_dim.filterAll(),
+        proj_dim.filterAll(),
         dc.filterAll('other'),
         dc.redrawAll('table'),
         dc.filterAll('commitsTable')
@@ -274,18 +284,18 @@ function reset(){
 }
 
 $(document).ready(function(){
-	   $("body").css("cursor", "progress");
+    $("body").css("cursor", "progress");
     $.when(getting_commits, getting_orgs, getting_repos, getting_auths, getting_configuration).done(function (commits, orgs, repos, auths, configuration) {
 	// Element 0 of the array contains the data
 	    load_commits(commits[0], orgs[0], repos[0], auths[0]);
 	    $("#companyName").text(configuration[0]["project_name"])
 	    $.when(draw_charts()).done(function(){
-		$('.relojito').remove();
-	});
-
+		    $('.relojito').remove();
+	    });
+        var getting_messages = $.getJSON('json/scm-messages.json');
         $.when(getting_messages).done(function (messages) {
-		$("body").css("cursor", "default");
-		$("#repoPieChart").css("background", "");
+		    $("body").css("cursor", "default");
+		    $("#repoPieChart").css("background", "");
             load_messages(messages);
             draw_messages_table(ndx);
         });
