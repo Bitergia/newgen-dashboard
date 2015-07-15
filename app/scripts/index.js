@@ -27,6 +27,7 @@ var getting_orgs = $.getJSON('json/scm-orgs.json');
 var getting_auths = $.getJSON('json/scm-persons.json');
 var getting_repos = $.getJSON('json/scm-repos.json');
 var getting_messages = $.getJSON('json/scm-messages.json');
+var getting_configuration = $.getJSON('json/config.json');
 
 var pieClickEvent = new Event('table');
 var timeRangeEvent = new Event('time');
@@ -274,9 +275,10 @@ function reset(){
 
 $(document).ready(function(){
 	   $("body").css("cursor", "progress");
-    $.when(getting_commits, getting_orgs, getting_repos, getting_auths).done(function (commits, orgs, repos, auths) {
+    $.when(getting_commits, getting_orgs, getting_repos, getting_auths, getting_configuration).done(function (commits, orgs, repos, auths, configuration) {
 	// Element 0 of the array contains the data
 	    load_commits(commits[0], orgs[0], repos[0], auths[0]);
+	    $("#companyName").text(configuration[0]["project_name"])
 	    $.when(draw_charts()).done(function(){
 		$('.relojito').remove();
 	});
