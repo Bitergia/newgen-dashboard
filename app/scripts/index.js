@@ -10,6 +10,7 @@ var bot_dim;
 var org_chart;
 var repo_chart;
 var auth_chart;
+var ndx;
 
 var repo_array = [];
 var auth_array = [];
@@ -270,14 +271,19 @@ function reset(){
         $("#filterRepo").empty()
     });
 }
+
 $(document).ready(function(){
-	$("body").css("cursor", "progress");
+	   $("body").css("cursor", "progress");
     $.when(getting_commits, getting_orgs, getting_repos, getting_auths).done(function (commits, orgs, repos, auths) {
 	// Element 0 of the array contains the data
 	    load_commits(commits[0], orgs[0], repos[0], auths[0]);
-	    var ndx = draw_charts();
+	    $.when(draw_charts()).done(function(){
+		$('.relojito').remove();
+	});
+
         $.when(getting_messages).done(function (messages) {
 		$("body").css("cursor", "default");
+		$("#repoPieChart").css("background", "");
             load_messages(messages);
             draw_messages_table(ndx);
         });

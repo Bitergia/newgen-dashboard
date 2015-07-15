@@ -1,5 +1,5 @@
 function draw_charts () {
-    var ndx = crossfilter(dc_commits);
+    ndx = crossfilter(dc_commits);
     var all = ndx.groupAll();
 
     bot_dim = ndx.dimension(function(d){
@@ -214,7 +214,7 @@ function draw_charts () {
     var hour_max = 23;
     var hours_chart = dc.barChart('#commitsHoursChart', 'other');
     hours_chart
-    	.width(600)
+    	.width(500)
     	.height(150)
     	.transitionDuration(1000)
     	.margins({top: 10, right: 10, bottom: 25, left: 50})
@@ -234,8 +234,8 @@ function draw_charts () {
     var tz_max = 12;
     var tz_chart = dc.barChart('#commitsTZChart', 'other');
     tz_chart
-    	.width(600)
     	.height(150)
+        .width(320)
     	.transitionDuration(1000)
     	.margins({top: 10, right: 10, bottom: 25, left: 50})
     	.dimension(tz_dim)
@@ -381,9 +381,7 @@ function draw_charts () {
             ' <button type="button" class="btn btn-primary btn-sm" onclick="reset()">Reset all filters</button></span>'
         });
 
-
     dc.renderAll('other');
     dc.renderAll('table');
-    return ndx;
 };
 
