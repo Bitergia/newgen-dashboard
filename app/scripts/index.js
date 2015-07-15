@@ -271,11 +271,13 @@ function reset(){
     });
 }
 $(document).ready(function(){
+	$("body").css("cursor", "progress");
     $.when(getting_commits, getting_orgs, getting_repos, getting_auths).done(function (commits, orgs, repos, auths) {
 	// Element 0 of the array contains the data
 	    load_commits(commits[0], orgs[0], repos[0], auths[0]);
 	    var ndx = draw_charts();
         $.when(getting_messages).done(function (messages) {
+		$("body").css("cursor", "default");
             load_messages(messages);
             draw_messages_table(ndx);
         });

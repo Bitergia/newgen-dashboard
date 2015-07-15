@@ -12,7 +12,7 @@ function Pies(){
     var grp = dim.group()
 
     compPie
-    .width(350)
+    .width(10000)
     .height(250)
     .dimension(dim)
     .group(grp)
