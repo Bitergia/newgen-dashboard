@@ -10,14 +10,15 @@ function draw_charts () {
     });
     var org_grp = org_dim.group();
     
+		var width_org_chart = document.getElementById("compPieChart").offsetWidth;
     org_chart = dc.pieChart('#compPieChart', 'other');
     org_chart
-        .width(550)
-	    .height(300)
+        .width(width_org_chart)
+	    .height((width_org_chart/1.618033))
 	    .transitionDuration(1000)
 	    .dimension(org_dim)
 	    .group(org_grp)
-	    .cx(325)
+	    .cx((width_org_chart/1.618033))
 	    .cap(10)
         .legend(dc.legend().x(0).y(3).itemHeight(20).gap(5))
         .ordering(function (d) { return -d.value; });
@@ -66,14 +67,15 @@ function draw_charts () {
     });
     var repo_grp = repo_dim.group();
     
+	var width_repo_chart = document.getElementById("repoPieChart").offsetWidth;
     repo_chart = dc.pieChart('#repoPieChart', 'other');
     repo_chart
-        .width(550)
-	    .height(300)
+        .width(width_repo_chart)
+	    .height((width_repo_chart/1.618033))
 	    .transitionDuration(1000)
 	    .dimension(repo_dim)
 	    .group(repo_grp)
-	    .cx(325)
+	    .cx((width_repo_chart/1.618033))
 	    .cap(10)
         .legend(dc.legend().x(0).y(3).itemHeight(20).gap(5))
         .ordering(function (d) { return -d.value; });
@@ -120,15 +122,16 @@ function draw_charts () {
     var auth_dim = ndx.dimension(function(d){
         return d.auth_name;
     });
+    var width_auth_grp = document.getElementById("authPieChart").offsetWidth;
     var auth_grp = auth_dim.group();
     auth_chart = dc.pieChart('#authPieChart', 'other');
     auth_chart
-        .width(550)
-	    .height(300)
+        .width(width_auth_grp)
+	    .height((width_auth_grp/1.618033))
 	    .transitionDuration(1000)
 	    .dimension(auth_dim)
 	    .group(auth_grp)
-	    .cx(325)
+	    .cx((width_auth_grp/1.618033))
 	    .cap(10)
         .legend(dc.legend().x(0).y(3).itemHeight(20).gap(5))
         .ordering(function (d) { return -d.value; });
@@ -175,12 +178,13 @@ function draw_charts () {
         return d.month;
     });
 
+	var widthcommitsChart = document.getElementById("commitsChart").offsetWidth;
     var commmits_month = months_dim.group();
     var date_min = months_dim.bottom(1)[0].month;
     var date_max = months_dim.top(1)[0].month;
     var commits_chart = dc.barChart('#commitsChart', 'other');
     commits_chart
-    	.width(1200)
+    	.width(widthcommitsChart)
 	    .height(300)
 	    .transitionDuration(1000)
 	    .margins({top: 10, right: 50, bottom: 25, left: 50})
@@ -209,12 +213,13 @@ function draw_charts () {
     var hours_dim = ndx.dimension(function(d){
         return d.hour;
     });
+	var width_hours_chart = document.getElementById("commitsHoursChart").offsetWidth;
     var commits_hour = hours_dim.group();
     var hour_min = 0;
     var hour_max = 23;
     var hours_chart = dc.barChart('#commitsHoursChart', 'other');
     hours_chart
-    	.width(500)
+    	.width(width_hours_chart)
     	.height(150)
     	.transitionDuration(1000)
     	.margins({top: 10, right: 10, bottom: 25, left: 50})
@@ -229,13 +234,15 @@ function draw_charts () {
     var tz_dim = ndx.dimension(function(d){
         return d.tz;
     });
+
+	var width_tz_chart = document.getElementById("commitsTZChart").offsetWidth;
     var commits_tz = tz_dim.group();
     var tz_min = -12;
     var tz_max = 12;
     var tz_chart = dc.barChart('#commitsTZChart', 'other');
     tz_chart
     	.height(150)
-        .width(320)
+        .width(width_tz_chart)
     	.transitionDuration(1000)
     	.margins({top: 10, right: 10, bottom: 25, left: 50})
     	.dimension(tz_dim)
