@@ -5,7 +5,7 @@ function draw_charts () {
     bot_dim = ndx.dimension(function(d){
         return d.bot;
     });
-
+    bot_dim.filter(0);
     proj_dim = ndx.dimension(function(d){
         return ""+d.proj_name;
     });
@@ -276,7 +276,7 @@ function draw_charts () {
     tableRepo
         .dimension(repoDim)
         .group(function (d) {return "";})
-        .size(7)
+        .size(3)
         .columns([
             {
             	label: 'Repositories',
@@ -304,10 +304,10 @@ function draw_charts () {
 
     org = [];
 	orgDim = ndx.dimension(function (d) {
-		if (org.indexOf(d.org_name) == -1) {
-			org.push(d.org_name);
+		if (org.indexOf(""+d.org_name) == -1) {
+			org.push(""+d.org_name);
 		}
-		var i = org.indexOf(d.org_name);
+		var i = org.indexOf(""+d.org_name);
 	    return org[i];
 	});
 	orgGrp = orgDim.group();
@@ -317,7 +317,7 @@ function draw_charts () {
     tableOrg
         .dimension(orgDim)
         .group(function (d) {return '';})
-        .size(7)
+        .size(3)
         .columns([
             {
             label: 'Organizations',
@@ -360,7 +360,7 @@ function draw_charts () {
     tableAuth
         .dimension(authDim)
         .group(function (d) {return '';})
-        .size(7)
+        .size(3)
         .columns([
             {
             label: 'Developers',

@@ -44,9 +44,11 @@ function load_commits (commits, orgs, repos, auths) {
     });
     repos.values.forEach(function (value) {
         repo_names[value[0]] = value[1];
-        proj_names[value[0]] = value[3];
         repo_array.push(value[1]);
-        proj_array.push(value[3]);
+        if (proj_array.indexOf(value[3]) == -1) {
+            proj_array.push(value[3]);
+            proj_names[value[0]] = value[3];
+        }
         entriesdb.push(value[1]);
     });
     auths.values.forEach(function (value) {
@@ -329,13 +331,13 @@ $("#projectForm").keyup(function(e){
 
 function reset(){
     $.when(
-        bot_dim.filterAll(),
+        bot_dim.filter(0),
         proj_dim.filterAll(),
         dc.filterAll('other'),
         dc.redrawAll('table'),
         dc.filterAll('commitsTable')
     ).done(function(){
-        document.getElementById("checkbox").checked = true;
+        document.getElementById("checkbox").checked = false;
         tableUpdate('reset');
         dc.redrawAll('commitsTable');
         dc.redrawAll('other');

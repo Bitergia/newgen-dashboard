@@ -25,9 +25,15 @@ function tableUpdate(type) {
         }
     }*/
     if (type == 'more') {
-        tableRepo.size(tableRepo.size()+4);
-		tableOrg.size(tableOrg.size()+4);
-		tableAuth.size(tableAuth.size()+4);
+        if (tableRepo.size() < repoGrp.top(Infinity).length) {
+            tableRepo.size(tableRepo.size()+1);
+        }
+		if (tableOrg.size() < orgGrp.top(Infinity).length) {
+            tableOrg.size(tableOrg.size()+1);
+        }
+		if (tableAuth.size() < authGrp.top(Infinity).length) {
+            tableAuth.size(tableAuth.size()+1);
+        }
     }
 	var order = -1;
 	var order2 = -1;
