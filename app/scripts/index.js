@@ -27,11 +27,12 @@ var entriesdb=[];
 
 var db="";
 
-var getting_commits 
-var getting_orgs 
-var getting_auths 
-var getting_repos 
-var getting_configuration 
+var getting_commits;
+var getting_orgs;
+var getting_auths;
+var getting_repos;
+var getting_configuration;
+var getting_messages;
 
 var pieClickEvent = new Event('table');
 var timeRangeEvent = new Event('time');
@@ -90,6 +91,7 @@ function load_messages (messages) {
     messages.values.forEach(function (value) {
         messages_text[value[0]] = value[1];
     });
+console.log(messages.values.length)
     dc_commits.forEach(function (d) {
         d.message = messages_text[d.id];
     });
@@ -207,11 +209,11 @@ function writeURL(){
 function readDB(){
     var arrayStrURL=document.URL.split("?")
     if((arrayStrURL.length != 1 )&& (arrayStrURL[1]!="")){
-	if(arrayStrURL[1].split("db=").length!=1){
-		db=arrayStrURL[1].split("db=")[1].split("&")[0].split("+")[0]
-	}else{
-		db="";
-	}
+	    if(arrayStrURL[1].split("db=").length!=1){
+		    db=arrayStrURL[1].split("db=")[1].split("&")[0].split("+")[0]
+	    }else{
+		    db="";
+	    }
     }
 }
 /********************** Read generated URL ****************************/
@@ -371,17 +373,21 @@ $(document).ready(function(){
 		    $.when(draw_charts()).done(function(){
 			    $('.relojito').remove();
 		    });
-		var getting_messages = $.getJSON('json/scm-messages.json');
-		$.when(getting_messages).done(function (messages) {
-			    $("body").css("cursor", "default");
-			    $("#repoPieChart").css("background", "");
-		    load_messages(messages);
-		    draw_messages_table(ndx);
-		});
-		readURL();
-		$(':input:not(textarea)').keypress(function(event) {
-		    return event.keyCode != 13;
-		});
+            if(db != ""){
+    		    getting_messages = $.getJSON('json/'+db+'/scm-messages.json');
+            } else {
+                getting_messages = $.getJSON('json/scm-messages.json');
+            }
+		    $.when(getting_messages).done(function (messages) {
+			        $("body").css("cursor", "default");
+			        $("#repoPieChart").css("background", "");
+		        load_messages(messages);
+		        draw_messages_table(ndx);
+		    });
+		    readURL();
+		    $(':input:not(textarea)').keypress(function(event) {
+		        return event.keyCode != 13;
+		    });
 	    })
     })
 });

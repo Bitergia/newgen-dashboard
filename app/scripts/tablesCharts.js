@@ -131,7 +131,7 @@ function draw_messages_table () {
             {
                 label: 'Message',
                 format: function(d) {
-                    return d.message;
+                    return ""+d.message;
                 }
             },
             {
@@ -149,7 +149,7 @@ function draw_messages_table () {
 			{
 				label: 'Repository',
 				format: function(d) {
-					return d.repo_name;
+					return ""+d.repo_name;
 				}
 			},
             {
