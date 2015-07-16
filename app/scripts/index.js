@@ -27,11 +27,11 @@ var entriesdb=[];
 
 var db="";
 
-var getting_commits =  $.getJSON('json/scm-commits.json');
-var getting_orgs = $.getJSON('json/scm-orgs.json');
-var getting_auths = $.getJSON('json/scm-persons.json');
-var getting_repos = $.getJSON('json/scm-repos.json');
-var getting_configuration = $.getJSON('json/config.json');
+var getting_commits 
+var getting_orgs 
+var getting_auths 
+var getting_repos 
+var getting_configuration 
 
 var pieClickEvent = new Event('table');
 var timeRangeEvent = new Event('time');
