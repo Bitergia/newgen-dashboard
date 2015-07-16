@@ -25,6 +25,8 @@ var compFilters = [];
 var projFilters = [];
 var entriesdb=[];
 
+var db="";
+
 var getting_commits =  $.getJSON('json/scm-commits.json');
 var getting_orgs = $.getJSON('json/scm-orgs.json');
 var getting_auths = $.getJSON('json/scm-persons.json');
@@ -130,31 +132,39 @@ String.prototype.replaceAll = function(str1, str2, ignore){
     return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 }
 /**************** Generate URL by filters *****************/
+
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
 function writeURL(){
-    var repoStrUrl='repo='
-    repoFilters.forEach(function(element){
-        if(repoFilters.indexOf(element)==repoFilters.length-1){
-            repoStrUrl+=element
-        }else{
-            repoStrUrl+=element+'+'
-        }
+
+    var dic={}
+    repoFilters.forEach(function(element){      
+	  
+	if(dic["repo="]==undefined){
+		dic["repo="]=[]
+	}
+	dic["repo="].push(element)
     })
-    var compStrUrl='comp='
     compFilters.forEach(function(element){
-        if(compFilters.indexOf(element)==compFilters.length-1){
-            compStrUrl+=element
-        }else{
-            compStrUrl+=element+'+'
-        }
+        if(dic["comp="]==undefined){
+		dic["comp="]=[]
+	}
+	dic["comp="].push(element)
     })
-    var deveStrUrl='deve='
     deveFilters.forEach(function(element){
-        if(deveFilters.indexOf(element)==deveFilters.length-1){
-            deveStrUrl+=element
-        }else{
-            deveStrUrl+=element+'+'
-        }
+        if(dic["deve="]==undefined){
+		dic["deve="]=[]
+	}
+	dic["deve="].push(element)
     })
+
+	
 /*    var projStrUrl='proj='
     projFilters.forEach(function(element){
         if(projFilters.indexOf(element)==projFilters.length-1){
@@ -164,18 +174,55 @@ function writeURL(){
         }
     })*/
 //    return '?'+projStrUrl+'&'+repoStrUrl+'&'+deveStrUrl+'&'+compStrUrl
-    return '?'+repoStrUrl+'&'+deveStrUrl+'&'+compStrUrl;
+	
+	var result="?";
+	
+	Object.keys(dic).forEach(function(element){
+	
+		result+=element
+
+		dic[element].forEach(function(element2){
+			if(dic[element].indexOf(element2)==0){
+				result+=element2
+			}else{
+				result+="+"+element2
+			}
+		})
+
+		result+="&"
+	
+	})
+	
+	return result
+
 }
 /********************** Read generated URL ****************************/
 function readURL(){
     var arrayStrURL=document.URL.split("?")
-    if(arrayStrURL.length != 1){
+    if((arrayStrURL.length != 1 )&& (arrayStrURL[1]!="")){
         var reset=false;
-        var repoStrUrl=arrayStrURL[1].split("repo=")[1].split("&")[0].split("+")
-        var compStrUrl=arrayStrURL[1].split("comp=")[1].split("&")[0].split("+")
-        var deveStrUrl=arrayStrURL[1].split("deve=")[1].split("&")[0].split("+")
+        var repoStrUrl;
+
+	if(arrayStrURL[1].split("repo=").length!=1){
+		repoStrUrl=arrayStrURL[1].split("repo=")[1].split("&")[0].split("+")
+	}else{
+		repoStrUrl=[];
+	}
+        var compStrUrl;
+	if(arrayStrURL[1].split("comp=").length!=1){
+		compStrUrl=arrayStrURL[1].split("comp=")[1].split("&")[0].split("+")
+	}else{
+		compStrUrl=[];
+	}
+
+	var deveStrUrl;
+	if(arrayStrURL[1].split("deve=").length!=1){
+		deveStrUrl=arrayStrURL[1].split("deve=")[1].split("&")[0].split("+")
+	}else{
+		deveStrUrl=[];
+	}
     //    var projStrUrl=arrayStrURL[1].split("proj=")[1].split("&")[0].split("+")
-        if(repoStrUrl[0]!=""){
+        if(repoStrUrl.length!=0){
             repoStrUrl.forEach(function(element){
                 if(element.split("Others%20").length==2){
                     reset=true;
@@ -184,7 +231,7 @@ function readURL(){
                 }
             })
         }
-        if(compStrUrl[0]!=""){
+        if(compStrUrl.length!=0){
             compStrUrl.forEach(function(element){
                 if(element.split("Others%20").length==2){
                     reset=true;
