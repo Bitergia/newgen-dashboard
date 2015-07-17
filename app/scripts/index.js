@@ -46,9 +46,9 @@ function load_commits (commits, orgs, repos, auths) {
     repos.values.forEach(function (value) {
         repo_names[value[0]] = value[1];
         repo_array.push(value[1]);
+        proj_names[value[0]] = value[3];
         if (proj_array.indexOf(value[3]) == -1) {
             proj_array.push(value[3]);
-            proj_names[value[0]] = value[3];
         }
         entriesdb.push(value[1]);
     });
@@ -91,7 +91,6 @@ function load_messages (messages) {
     messages.values.forEach(function (value) {
         messages_text[value[0]] = value[1];
     });
-console.log(messages.values.length)
     dc_commits.forEach(function (d) {
         d.message = messages_text[d.id];
     });

@@ -67,7 +67,6 @@ function draw_charts () {
         }
         window.history.replaceState("object or string", "Title", writeURL());
     });
-
     var repo_dim = ndx.dimension(function(d){
         return ""+d.repo_name;
     });
