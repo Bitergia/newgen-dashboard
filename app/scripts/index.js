@@ -65,7 +65,7 @@ function load_commits (commits, orgs, repos, auths) {
 		        var date = new Date(value[index]*1000);
 		        record[name] = date;
 		        record.month = new Date(date.getFullYear(), date.getMonth(), 1);
-		        record.hour = date.getHours();
+		        record.hour = date.getUTCHours();
 	        } else if (name == "org") {
 		        record[name] = value[index];
 		        record.org_name = org_names[value[index]];

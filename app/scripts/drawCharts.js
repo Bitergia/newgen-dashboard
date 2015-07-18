@@ -233,7 +233,7 @@ function draw_charts () {
     	.group(commits_hour)
     	.x(d3.scale.linear().domain([hour_min,hour_max]))
 	    .elasticY(true)
-	    .xAxisLabel("Hour");
+	    .xAxisLabel("Hour of the day");
     hours_chart.on("filtered", function(chart,filter) {
 		document.dispatchEvent(timeRangeEvent);
     });
