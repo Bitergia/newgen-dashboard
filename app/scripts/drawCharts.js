@@ -28,14 +28,15 @@ function draw_charts () {
 	    .cap(10)
         .legend(dc.legend().x(0).y(3).itemHeight(20).gap(5))
         .ordering(function (d) { return -d.value; });
-
+/*
     org_chart.on('renderlet', function(chart) {
-	  chart.selectAll('.pie-slice').on("click", function(d) {
-    	document.dispatchEvent(pieClickEvent);
-	  });
-	});
+	    chart.selectAll('.pie-slice').on("click", function(d) {
+    	    document.dispatchEvent(pieClickEvent);
+	    });
+	});*/
 
     org_chart.on("filtered", function(chart,filter) {
+        document.dispatchEvent(pieClickEvent);
         var i=0;
         if(filter==null){
             compFilters=[]
@@ -85,13 +86,8 @@ function draw_charts () {
         .legend(dc.legend().x(0).y(3).itemHeight(20).gap(5))
         .ordering(function (d) { return -d.value; });
 
-    repo_chart.on('renderlet', function(chart) {
-        chart.selectAll('.pie-slice').on("click", function(d) {
-            document.dispatchEvent(pieClickEvent);
-        });
-    });
-
     repo_chart.on("filtered", function(chart,filter) {
+        document.dispatchEvent(pieClickEvent);
         var i=0;
         if(filter==null){
             repoFilters=[]
@@ -141,13 +137,8 @@ function draw_charts () {
         .legend(dc.legend().x(0).y(3).itemHeight(20).gap(5))
         .ordering(function (d) { return -d.value; });
 
-    auth_chart.on('renderlet', function(chart) {
-	  chart.selectAll('.pie-slice').on("click", function(d) {
-    	document.dispatchEvent(pieClickEvent);
-	  });
-	});
-
     auth_chart.on("filtered", function(chart,filter) {
+        document.dispatchEvent(pieClickEvent);
         var i=0;
         if(filter==null){
             deveFilters=[]
