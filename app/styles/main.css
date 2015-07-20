@@ -2,7 +2,7 @@ body {
   background: #fafafa;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
-  padding-top: 70px;
+  padding-top: 50px;
 }
 
 .browsehappy {
@@ -32,15 +32,26 @@ h1, h2, h3, h4, h5 , h6 {
 #tableRepo .dc-table-column._0, #tableOrg .dc-table-column._0, #tableAuth .dc-table-column._0 {
   cursor: pointer;
 }
-/*
-#commitsChart {
-  width: 64%;
+
+.under-dev {
+  color: #fff;
+  text-shadow: 0 0 20px #000;
+  background: url(../images/under-development.jpg) no-repeat center top;
+  background-size: cover;
+  /*max-height: 450px;*/
+  padding: 1em;
+  font-size: 1.2em;
 }
 
-#commitsHoursChart, #commitsTZChart {
-  width: 36%;
+.under-dev h1 {
+  color:#fff;
+  font-size: 2em;
+  margin-bottom: 0.5em;
 }
 
-#repoPieChart, #compPieChart, #authPieChart {
-  width: 33%;
-}*/
+.under-dev table {
+  background-color: rgba(0, 0, 0, 0.55);
+}
+.under-dev a {
+  color:#fff;
+}
