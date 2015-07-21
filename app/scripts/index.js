@@ -352,13 +352,6 @@ function reset(){
 $(document).ready(function(){
     //$("body").css("cursor", "progress");
 
-    $('#shareOnTW').click(
-      window.location.href = 'https://twitter.com/share?url='+encodeURIComponent(document.URL)+'&text='+configuration[0]['project_name']+'&hashtags=metrics,development&via=bitergia';
-      );
-    $('shareUrl').click(
-      window.prompt('Copy to clipboard: CTRL+C / CMD+C, Enter', document.URL);
-    );
-
     $.when(readDB()).done(function(){
 		if(db!=""){
 			getting_commits =  $.getJSON('json/'+db+'/scm-commits.json');
@@ -375,6 +368,14 @@ $(document).ready(function(){
 		}
 	    $.when(getting_commits, getting_orgs, getting_repos, getting_auths, getting_configuration).done(function (commits, orgs, repos, auths, configuration) {
 		// Element 0 of the array contains the data
+
+    $('#shareOnTW').click(function() {
+      window.location.href = 'https://twitter.com/share?url='+encodeURIComponent(document.URL)+'&text='+configuration[0]['project_name']+'dashboard&hashtags=development,metrics&via=bitergia';
+    });
+    $('shareUrl').click(function() {
+      window.prompt('Copy to clipboard: CTRL+C / CMD+C, Enter', document.URL);
+    });
+
 		    load_commits(commits[0], orgs[0], repos[0], auths[0]);
 		    $("#companyName").text(configuration[0]["project_name"])
 		    $.when(draw_charts()).done(function(){
