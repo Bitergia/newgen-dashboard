@@ -147,8 +147,8 @@ Object.size = function(obj) {
 function writeURL(){
 
     var dic={}
-    repoFilters.forEach(function(element){      
-	  
+    repoFilters.forEach(function(element){
+
 	if(dic["repo="]==undefined){
 		dic["repo="]=[]
 	}
@@ -180,11 +180,11 @@ function writeURL(){
         }
     })*/
 //    return '?'+projStrUrl+'&'+repoStrUrl+'&'+deveStrUrl+'&'+compStrUrl
-	
+
 	var result="?";
-	
+
 	Object.keys(dic).forEach(function(element){
-	
+
 		result+=element
 
 		dic[element].forEach(function(element2){
@@ -196,9 +196,9 @@ function writeURL(){
 		})
 
 		result+="&"
-	
+
 	})
-	
+
 	return result
 
 }
@@ -256,7 +256,7 @@ function readURL(){
                     reset=true;
                 }else{
                     org_chart.filter(unescape(element))
-                }   
+                }
             })
         }
         if(deveStrUrl[0]!=""){
@@ -350,7 +350,15 @@ function reset(){
 }
 
 $(document).ready(function(){
-    $("body").css("cursor", "progress");
+    //$("body").css("cursor", "progress");
+
+    $('#shareOnTW').click(
+      window.location.href = 'https://twitter.com/share?url='+encodeURIComponent(document.URL)+'&text='+configuration[0]['project_name']+'&hashtags=metrics,development&via=bitergia';
+      );
+    $('shareUrl').click(
+      window.prompt('Copy to clipboard: CTRL+C / CMD+C, Enter', document.URL);
+    );
+
     $.when(readDB()).done(function(){
 		if(db!=""){
 			getting_commits =  $.getJSON('json/'+db+'/scm-commits.json');
@@ -390,4 +398,3 @@ $(document).ready(function(){
 	    })
     })
 });
-
