@@ -15,7 +15,7 @@ function draw_charts () {
     });
 
     var org_grp = org_dim.group();
-    
+
 		var width_org_chart = document.getElementById("compPieChart").offsetWidth;
     org_chart = dc.pieChart('#compPieChart', 'other');
     org_chart
@@ -72,7 +72,7 @@ function draw_charts () {
         return ""+d.repo_name;
     });
     var repo_grp = repo_dim.group();
-    
+
 	var width_repo_chart = document.getElementById("repoPieChart").offsetWidth;
     repo_chart = dc.pieChart('#repoPieChart', 'other');
     repo_chart
@@ -259,14 +259,19 @@ function draw_charts () {
 		var i = repo.indexOf(""+d.repo_name);
 	    return repo[i];
 	});
+
+    var min_rows_repo = 3;
 	repoGrp = repoDim.group();
+    if (repoGrp.top(Infinity).length < min_rows_repo){
+        min_rows_repo = repoGrp.top(Infinity).length;
+    }
     var order = -1;
     var order2 = -1;
     tableRepo = dc.dataTable('#tableRepo', 'table');
     tableRepo
         .dimension(repoDim)
         .group(function (d) {return "";})
-        .size(3)
+        .size(min_rows_repo)
         .columns([
             {
             	label: 'Repositories',
@@ -300,14 +305,19 @@ function draw_charts () {
 		var i = org.indexOf(""+d.org_name);
 	    return org[i];
 	});
+
+    var min_rows_org = 3;
 	orgGrp = orgDim.group();
+    if (orgGrp.top(Infinity).length < min_rows_org){
+        min_rows_org = orgGrp.top(Infinity).length;
+    }
     tableOrg = dc.dataTable('#tableOrg', 'table');
     var orderOrgKey = -1;
     var orderOrgVal = -1;
     tableOrg
         .dimension(orgDim)
         .group(function (d) {return '';})
-        .size(3)
+        .size(min_rows_org)
         .columns([
             {
             label: 'Organizations',
@@ -324,7 +334,7 @@ function draw_charts () {
                 }
             }
         ]);
-        
+
     tableOrg.on('renderlet', function(table) {
         table.selectAll('.dc-table-group').classed('info', true);
         table.selectAll(".dc-table-column._0").on("click", function(d){
@@ -342,7 +352,11 @@ function draw_charts () {
 	    return auth[i];
 	});
 
+    var min_rows_auth = 3;
 	authGrp = authDim.group();
+    if (authGrp.top(Infinity).length < min_rows_auth){
+        min_rows_auth = authGrp.top(Infinity).length;
+    }
     tableAuth = dc.dataTable('#tableAuth', 'table');
     var authOrderKey = -1;
 	var authOrderVal = -1;
@@ -350,7 +364,7 @@ function draw_charts () {
     tableAuth
         .dimension(authDim)
         .group(function (d) {return '';})
-        .size(3)
+        .size(min_rows_auth)
         .columns([
             {
             label: 'Developers',
@@ -367,7 +381,7 @@ function draw_charts () {
                 }
             }
         ]);
-        
+
     tableAuth.on('renderlet', function(table) {
         table.selectAll('.dc-table-group').classed('info', true);
         table.selectAll(".dc-table-column._0").on("click", function(d){
@@ -389,4 +403,3 @@ function draw_charts () {
     dc.renderAll('other');
     dc.renderAll('table');
 };
-
