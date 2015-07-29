@@ -1,32 +1,7 @@
-var org_names = {};
-var dc_commits = [];
-var dc_commits_month = [];
-var auth_names = {};
-var repo_names = {};
-var proj_names = {};
-var bots = {};
-var messages_text = {};
-var bot_dim;
-var proj_dim;
-
-var org_chart;
-var repo_chart;
-var auth_chart;
-var ndx;
-
-var repo_array = [];
-var auth_array = [];
-var org_array = [];
-var proj_array = ['All'];
-
-var repoFilters = [];
-var deveFilters = [];
-var compFilters = [];
-var projFilters = [];
-var entriesdb=[];
-
+// use to download the corret JSON files from the selected path
 var db="";
 
+// use to download JSON files
 var getting_commits;
 var getting_orgs;
 var getting_auths;
@@ -34,9 +9,110 @@ var getting_repos;
 var getting_configuration;
 var getting_messages;
 
+// use to create crossfilter variable
+var dc_commits = [];
+var dc_commits_month = [];
+var ndx;
+
+/* this variable is a dictionary where we save all changes and charts in our program */
+var filter_dic = {'activate_filt': {'repos': [], 'deves': [], 'orgs': [], 'projs': [], 'entriesdb': []}, 
+                  'charts': {},
+                  'dims': {}
+};
+
+// the object for each charts
+var org_names = {};
+var auth_names = {};
+var repo_names = {};
+var proj_names = {};
+var bots = {};
+var messages_text = {};
+
+var repo_array = [];
+var auth_array = [];
+var org_array = [];
+var proj_array = ['All'];
+
+// trigger for click in the pies chart
 var pieClickEvent = new Event('table');
 var timeRangeEvent = new Event('time');
 
+
+//var bot_dim;
+//var proj_dim;
+
+//var org_chart;
+//var repo_chart;
+//var auth_chart;
+
+
+
+
+//var repoFilters = [];
+//var deveFilters = [];
+//var compFilters = [];
+//var projFilters = [];
+//var entriesdb=[];
+
+
+
+
+
+$(document).ready(function(){
+
+    $.when(readDB()).done(function(){
+        // download the JSON files from repository indicated in db
+		if(db!=""){
+			getting_commits =  $.getJSON('json/'+db+'/scm-commits.json');
+			getting_orgs = $.getJSON('json/'+db+'/scm-orgs.json');
+			getting_auths = $.getJSON('json/'+db+'/scm-persons.json');
+			getting_repos = $.getJSON('json/'+db+'/scm-repos.json');
+			getting_configuration = $.getJSON('json/'+db+'/config.json');
+		}else{
+			getting_commits =  $.getJSON('json/scm-commits.json');
+			getting_orgs = $.getJSON('json/scm-orgs.json');
+			getting_auths = $.getJSON('json/scm-persons.json');
+			getting_repos = $.getJSON('json/scm-repos.json');
+			getting_configuration = $.getJSON('json/config.json');
+		}
+	    $.when(getting_commits, getting_orgs, getting_repos, getting_auths, getting_configuration).done(function (commits, orgs, repos, auths, configuration) {
+            load_commits(commits[0], orgs[0], repos[0], auths[0]);		    
+            ndx = crossfilter(dc_commits);
+
+            // share twitter
+            $('#shareOnTW').click(function() {
+              window.location.href = 'https://twitter.com/share?url='+encodeURIComponent(document.URL)+'&text='+configuration[0]['project_name']+'dashboard&hashtags=development,metrics&via=bitergia';
+            });
+            // share URL
+            $('shareUrl').click(function() {
+              window.prompt('Copy to clipboard: CTRL+C / CMD+C, Enter', document.URL);
+            });            
+
+	        $("#companyName").text(configuration[0]["project_name"])
+/*
+	        $.when(draw_charts()).done(function(){
+		        $('.relojito').remove();
+	        });
+            if(db != ""){
+		        getting_messages = $.getJSON('json/'+db+'/scm-messages.json');
+            } else {
+                getting_messages = $.getJSON('json/scm-messages.json');
+            }
+	        $.when(getting_messages).done(function (messages) {
+		            $("body").css("cursor", "default");
+		            $("#repoPieChart").css("background", "");
+	            load_messages(messages);
+	            draw_messages_table(ndx);
+	        });
+	        readURL();
+	        $(':input:not(textarea)').keypress(function(event) {
+	            return event.keyCode != 13;
+	        });*/
+	    })
+    })
+});
+
+// push in dc_commits the format for use crossfilter
 function load_commits (commits, orgs, repos, auths) {
     orgs.values.forEach(function (value) {
 	    org_names[value[0]] = value[1];
@@ -349,53 +425,4 @@ function reset(){
     });
 }
 
-$(document).ready(function(){
-    //$("body").css("cursor", "progress");
 
-    $.when(readDB()).done(function(){
-		if(db!=""){
-			getting_commits =  $.getJSON('json/'+db+'/scm-commits.json');
-			getting_orgs = $.getJSON('json/'+db+'/scm-orgs.json');
-			getting_auths = $.getJSON('json/'+db+'/scm-persons.json');
-			getting_repos = $.getJSON('json/'+db+'/scm-repos.json');
-			getting_configuration = $.getJSON('json/'+db+'/config.json');
-		}else{
-			getting_commits =  $.getJSON('json/scm-commits.json');
-			getting_orgs = $.getJSON('json/scm-orgs.json');
-			getting_auths = $.getJSON('json/scm-persons.json');
-			getting_repos = $.getJSON('json/scm-repos.json');
-			getting_configuration = $.getJSON('json/config.json');
-		}
-	    $.when(getting_commits, getting_orgs, getting_repos, getting_auths, getting_configuration).done(function (commits, orgs, repos, auths, configuration) {
-		// Element 0 of the array contains the data
-
-    $('#shareOnTW').click(function() {
-      window.location.href = 'https://twitter.com/share?url='+encodeURIComponent(document.URL)+'&text='+configuration[0]['project_name']+'dashboard&hashtags=development,metrics&via=bitergia';
-    });
-    $('shareUrl').click(function() {
-      window.prompt('Copy to clipboard: CTRL+C / CMD+C, Enter', document.URL);
-    });
-
-		    load_commits(commits[0], orgs[0], repos[0], auths[0]);
-		    $("#companyName").text(configuration[0]["project_name"])
-		    $.when(draw_charts()).done(function(){
-			    $('.relojito').remove();
-		    });
-            if(db != ""){
-    		    getting_messages = $.getJSON('json/'+db+'/scm-messages.json');
-            } else {
-                getting_messages = $.getJSON('json/scm-messages.json');
-            }
-		    $.when(getting_messages).done(function (messages) {
-			        $("body").css("cursor", "default");
-			        $("#repoPieChart").css("background", "");
-		        load_messages(messages);
-		        draw_messages_table(ndx);
-		    });
-		    readURL();
-		    $(':input:not(textarea)').keypress(function(event) {
-		        return event.keyCode != 13;
-		    });
-	    })
-    })
-});
