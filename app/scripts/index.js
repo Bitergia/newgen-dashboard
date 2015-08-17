@@ -34,12 +34,12 @@ var org_array = [];
 var proj_array = ['All'];
 
 // trigger for click in the pies chart
-var pieClickEvent = new Event('table');
-var timeRangeEvent = new Event('time');
+var pie_click_event = new Event('table');
+var time_range_event = new Event('time');
 
 
-//var bot_dim;
-//var proj_dim;
+var bot_dim;
+var proj_dim;
 
 //var org_chart;
 //var repo_chart;
@@ -58,66 +58,13 @@ var timeRangeEvent = new Event('time');
 
 
 
-$(document).ready(function(){
-
-    $.when(readDB()).done(function(){
-        // download the JSON files from repository indicated in db
-		if(db!=""){
-			getting_commits =  $.getJSON('json/'+db+'/scm-commits.json');
-			getting_orgs = $.getJSON('json/'+db+'/scm-orgs.json');
-			getting_auths = $.getJSON('json/'+db+'/scm-persons.json');
-			getting_repos = $.getJSON('json/'+db+'/scm-repos.json');
-			getting_configuration = $.getJSON('json/'+db+'/config.json');
-		}else{
-			getting_commits =  $.getJSON('json/scm-commits.json');
-			getting_orgs = $.getJSON('json/scm-orgs.json');
-			getting_auths = $.getJSON('json/scm-persons.json');
-			getting_repos = $.getJSON('json/scm-repos.json');
-			getting_configuration = $.getJSON('json/config.json');
-		}
-	    $.when(getting_commits, getting_orgs, getting_repos, getting_auths, getting_configuration).done(function (commits, orgs, repos, auths, configuration) {
-            load_commits(commits[0], orgs[0], repos[0], auths[0]);		    
-            ndx = crossfilter(dc_commits);
-
-            // share twitter
-            $('#shareOnTW').click(function() {
-              window.location.href = 'https://twitter.com/share?url='+encodeURIComponent(document.URL)+'&text='+configuration[0]['project_name']+'dashboard&hashtags=development,metrics&via=bitergia';
-            });
-            // share URL
-            $('shareUrl').click(function() {
-              window.prompt('Copy to clipboard: CTRL+C / CMD+C, Enter', document.URL);
-            });            
-
-	        $("#companyName").text(configuration[0]["project_name"])
-/*
-	        $.when(draw_charts()).done(function(){
-		        $('.relojito').remove();
-	        });
-            if(db != ""){
-		        getting_messages = $.getJSON('json/'+db+'/scm-messages.json');
-            } else {
-                getting_messages = $.getJSON('json/scm-messages.json');
-            }
-	        $.when(getting_messages).done(function (messages) {
-		            $("body").css("cursor", "default");
-		            $("#repoPieChart").css("background", "");
-	            load_messages(messages);
-	            draw_messages_table(ndx);
-	        });
-	        readURL();
-	        $(':input:not(textarea)').keypress(function(event) {
-	            return event.keyCode != 13;
-	        });*/
-	    })
-    })
-});
 
 // push in dc_commits the format for use crossfilter
 function load_commits (commits, orgs, repos, auths) {
     orgs.values.forEach(function (value) {
 	    org_names[value[0]] = value[1];
         org_array.push(value[1]);
-        entriesdb.push(value[1]);
+        filter_dic.activate_filt.entriesdb.push(value[1]);
     });
     repos.values.forEach(function (value) {
         repo_names[value[0]] = value[1];
@@ -126,13 +73,13 @@ function load_commits (commits, orgs, repos, auths) {
         if (proj_array.indexOf(value[3]) == -1) {
             proj_array.push(value[3]);
         }
-        entriesdb.push(value[1]);
+        filter_dic.activate_filt.entriesdb.push(value[1]);
     });
     auths.values.forEach(function (value) {
         auth_names[value[3]] = value[1];
         bots[value[1]] = value[2];
         auth_array.push(value[1]);
-        entriesdb.push(value[1]);
+        filter_dic.activate_filt.entriesdb.push(value[1]);
     });
     commits.values.forEach(function (value) {
 	    var record = {}
@@ -173,14 +120,14 @@ function load_messages (messages) {
 }
 
 document.addEventListener('table', function (e) {
-	tableUpdate('click');
+	table_update('click');
 	dc.redrawAll('other');
     dc.redrawAll('table');
     dc.redrawAll('commitsTable')
 }, false);
 
 document.addEventListener('time', function (e) {
-	tableUpdate('time');
+	table_update('time');
 	dc.redrawAll('other');
     dc.redrawAll('table');
     dc.redrawAll('commitsTable')
@@ -192,12 +139,12 @@ $('#commitsTableMore').on('click', function () {
 });
 
 $('#tablesMore').on('click', function() {
-    tableUpdate('more');
+    table_update('more');
     dc.redrawAll('table');
 });
 
 $(".checkbox").change(function() {
-    if(this.checked) {
+    if (this.checked) {
         bot_dim.filterAll();
     } else {
         bot_dim.filter(0);
@@ -220,62 +167,50 @@ Object.size = function(obj) {
     return size;
 };
 
-function writeURL(){
+function writeURL(type){
 
-    var dic={}
-    repoFilters.forEach(function(element){
+    var dic = {};
+    filter_dic.activate_filt.repos.forEach(function(element){
 
-	if(dic["repo="]==undefined){
-		dic["repo="]=[]
+	if(dic["repo="] == undefined){
+		dic["repo="] = [];
 	}
-	dic["repo="].push(element)
+	dic["repo="].push(element);
     })
-    compFilters.forEach(function(element){
-        if(dic["comp="]==undefined){
-		dic["comp="]=[]
+    filter_dic.activate_filt.orgs.forEach(function(element){
+        if(dic["comp="] == undefined){
+		dic["comp="] = [];
 	}
-	dic["comp="].push(element)
+	dic["comp="].push(element);
     })
-    deveFilters.forEach(function(element){
-        if(dic["deve="]==undefined){
-		dic["deve="]=[]
-	}
-	dic["deve="].push(element)
-    })
+    filter_dic.activate_filt.deves.forEach(function(element){
+        if(dic["deve="] == undefined){
+		    dic["deve="] = [];
+	    }
+	    dic["deve="].push(element)
+    });
 
-    if(db!=""){
-	dic["db="]=[];
-	dic["db="].push(db)
+    if(db != ""){
+	    dic["db="] = [];
+	    dic["db="].push(db);
     }
-/*    var projStrUrl='proj='
-    projFilters.forEach(function(element){
-        if(projFilters.indexOf(element)==projFilters.length-1){
-            projStrUrl+=element
-        }else{
-            projStrUrl+=element+'+'
-        }
-    })*/
-//    return '?'+projStrUrl+'&'+repoStrUrl+'&'+deveStrUrl+'&'+compStrUrl
 
-	var result="?";
+	var result = "?";
 
 	Object.keys(dic).forEach(function(element){
-
-		result+=element
-
+		result += element;
 		dic[element].forEach(function(element2){
-			if(dic[element].indexOf(element2)==0){
-				result+=element2
+			if(dic[element].indexOf(element2) == 0){
+				result += element2;
 			}else{
-				result+="+"+element2
+				result += "+"+element2;
 			}
-		})
+		});
 
-		result+="&"
+		result += "&";
+	});
 
-	})
-
-	return result
+	return result;
 
 }
 
@@ -291,6 +226,7 @@ function readDB(){
 	    }
     }
 }
+
 /********************** Read generated URL ****************************/
 function readURL(){
     var arrayStrURL=document.URL.split("?")
@@ -348,7 +284,7 @@ function readURL(){
             dimProj.filter(unescape(projStrUrl[0]))
             $("#projectForm").val(unescape(projStrUrl[0]))
         }*/
-        tableUpdate();
+        table_update();
         if(reset){
             alert("We are sorry. The filter Others does not work now. We are working to solve it.");
             reset();
@@ -360,7 +296,7 @@ function readURL(){
 }
 
 $("#searchForm").autocomplete({
-    source: entriesdb,
+    source: filter_dic.activate_filt.entriesdb,
     minLength: 0
 }).on('focus', function() { $(this).keydown(); });
 
@@ -369,23 +305,24 @@ $('#searchForm').keyup(function(e){
         var entrie = this.value;
         if(entrie != ""){
             if(org_array.indexOf(entrie) != -1){
-                this.value = ""
-                org_chart.filter(entrie)
-                document.dispatchEvent(pieClickEvent);
+                this.value = "";
+                org_chart.filter(entrie);
+                document.dispatchEvent(pie_click_event);
             }else if(auth_array.indexOf(entrie) != -1){
-                this.value = ""
-                auth_chart.filter(entrie)
-                document.dispatchEvent(pieClickEvent);
+                this.value = "";
+                auth_chart.filter(entrie);
+                document.dispatchEvent(pie_click_event);
             }else if(repo_array.indexOf(entrie) != -1){
-                this.value = ""
-                repo_chart.filter(entrie)
-                document.dispatchEvent(pieClickEvent);
+                this.value = "";
+                repo_chart.filter(entrie);
+                document.dispatchEvent(pie_click_event);
             }else{
-                alert('No exist. Try again')
+                alert('No exist. Try again');
             }
         }
     }
 });
+
 $("#projectForm").autocomplete({
     source: proj_array,
     minLength: 0
@@ -395,13 +332,13 @@ $("#projectForm").keyup(function(e){
     if(e.keyCode == 13){
         var entrie = this.value;
         if(entrie != ""){
-            this.value = ""
+            this.value = "";
             if (entrie == 'All') {
                 proj_dim.filterAll();
             } else {
                 proj_dim.filter(entrie);
             }
-            document.dispatchEvent(pieClickEvent);
+            document.dispatchEvent(pie_click_event);
         }
     }
 });
@@ -415,14 +352,66 @@ function reset(){
         dc.filterAll('commitsTable')
     ).done(function(){
         document.getElementById("checkbox").checked = false;
-        tableUpdate('reset');
+        table_update('reset');
         dc.redrawAll('commitsTable');
         dc.redrawAll('other');
         dc.redrawAll('table');
-        $("#filterComp").empty()
-        $("#filterDeve").empty()
-        $("#filterRepo").empty()
+        $("#filterComp").empty();
+        $("#filterDeve").empty();
+        $("#filterRepo").empty();
     });
 }
 
+$(document).ready(function(){
 
+    $.when(readDB()).done(function(){
+        // download the JSON files from repository indicated in db
+		if(db!=""){
+			getting_commits =  $.getJSON('json/'+db+'/scm-commits.json');
+			getting_orgs = $.getJSON('json/'+db+'/scm-orgs.json');
+			getting_auths = $.getJSON('json/'+db+'/scm-persons.json');
+			getting_repos = $.getJSON('json/'+db+'/scm-repos.json');
+			getting_configuration = $.getJSON('json/'+db+'/config.json');
+		}else{
+			getting_commits =  $.getJSON('json/scm-commits.json');
+			getting_orgs = $.getJSON('json/scm-orgs.json');
+			getting_auths = $.getJSON('json/scm-persons.json');
+			getting_repos = $.getJSON('json/scm-repos.json');
+			getting_configuration = $.getJSON('json/config.json');
+		}
+	    $.when(getting_commits, getting_orgs, getting_repos, getting_auths, getting_configuration).done(function (commits, orgs, repos, auths, configuration) {
+            load_commits(commits[0], orgs[0], repos[0], auths[0]);		    
+            ndx = crossfilter(dc_commits);
+
+            // share twitter
+            $('#shareOnTW').click(function() {
+              window.location.href = 'https://twitter.com/share?url='+encodeURIComponent(document.URL)+'&text='+configuration[0]['project_name']+'dashboard&hashtags=development,metrics&via=bitergia';
+            });
+            // share URL
+            $('shareUrl').click(function() {
+              window.prompt('Copy to clipboard: CTRL+C / CMD+C, Enter', document.URL);
+            });            
+
+	        $("#companyName").text(configuration[0]["project_name"]);
+
+	        $.when(draw_charts()).done(function(){
+		        $('.relojito').remove();
+	        });
+            if(db != ""){
+		        getting_messages = $.getJSON('json/'+db+'/scm-messages.json');
+            } else {
+                getting_messages = $.getJSON('json/scm-messages.json');
+            }
+	        $.when(getting_messages).done(function (messages) {
+		            $("body").css("cursor", "default");
+		            $("#repoPieChart").css("background", "");
+	            load_messages(messages);
+	            draw_messages_table(ndx);
+	        });
+	        readURL();
+	        $(':input:not(textarea)').keypress(function(event) {
+	            return event.keyCode != 13;
+	        });
+	    })
+    })
+});
