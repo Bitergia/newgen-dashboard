@@ -5,8 +5,9 @@ function repo_table() {
     }
     var repoOrderKey = -1;
     var repoOrderValue = -1;
-    tableRepo = dc.dataTable('#tableRepo', 'table');
-    tableRepo
+
+    filter_dic.tables.repo = dc.dataTable('#tableRepo', 'table');
+    filter_dic.tables.repo
         .dimension(repo_dim)
         .group(function (d) {return "";})
         .size(min_rows_repo)
@@ -26,11 +27,10 @@ function repo_table() {
                 }
             }
         ]);
-
-    tableRepo.on('renderlet', function(table) {
+    filter_dic.tables.repo.on('renderlet', function(table) {
         table.selectAll('.dc-table-group').classed('info', true);
         table.selectAll(".dc-table-column._0").on("click", function(d){
-            repo_chart.filter($(this).html())
+            filter_dic.charts.repo.filter($(this).html());
             document.dispatchEvent(pie_click_event);
         });
     });
@@ -41,10 +41,11 @@ function org_table() {
     if (org_grp.top(Infinity).length < min_rows_org){
         min_rows_org = org_grp.top(Infinity).length;
     }
-    tableOrg = dc.dataTable('#tableOrg', 'table');
     var orderOrgKey = -1;
     var orderOrgVal = -1;
-    tableOrg
+
+    filter_dic.tables.org = dc.dataTable('#tableOrg', 'table');
+    filter_dic.tables.org
         .dimension(org_dim)
         .group(function (d) {return '';})
         .size(min_rows_org)
@@ -64,11 +65,10 @@ function org_table() {
                 }
             }
         ]);
-
-    tableOrg.on('renderlet', function(table) {
+    filter_dic.tables.org.on('renderlet', function(table) {
         table.selectAll('.dc-table-group').classed('info', true);
         table.selectAll(".dc-table-column._0").on("click", function(d){
-            org_chart.filter($(this).html())
+            filter_dic.charts.org.filter($(this).html());
             document.dispatchEvent(pie_click_event);
         });
     });
@@ -79,11 +79,11 @@ function auth_table() {
     if (auth_grp.top(Infinity).length < min_rows_auth){
         min_rows_auth = auth_grp.top(Infinity).length;
     }
-    tableAuth = dc.dataTable('#tableAuth', 'table');
     var authOrderKey = -1;
 	var authOrderVal = -1;
 
-    tableAuth
+    filter_dic.tables.auth = dc.dataTable('#tableAuth', 'table');
+    filter_dic.tables.auth
         .dimension(auth_dim)
         .group(function (d) {return '';})
         .size(min_rows_auth)
@@ -103,11 +103,10 @@ function auth_table() {
                 }
             }
         ]);
-
-    tableAuth.on('renderlet', function(table) {
+    filter_dic.tables.auth.on('renderlet', function(table) {
         table.selectAll('.dc-table-group').classed('info', true);
         table.selectAll(".dc-table-column._0").on("click", function(d){
-            auth_chart.filter($(this).html())
+            filter_dic.charts.auth.filter($(this).html())
             document.dispatchEvent(pie_click_event);
         });
     });
@@ -165,13 +164,13 @@ function draw_tables() {
 function repo_update() {
     var repoOrderKey = -1;
 	var repoOrderValue = -1;
-	tableRepo
+	filter_dic.tables.repo
         .columns([
             {
             	label: 'Repositories',
                 format: function(d){
 					repoOrderKey++;
-					if (repoOrderKey > tableRepo.size()-1){
+					if (repoOrderKey > filter_dic.tables.repo.size()-1){
 						repoOrderKey = 0;
 					}
 					return repo_grp.top(Infinity)[repoOrderKey].key;
@@ -181,7 +180,7 @@ function repo_update() {
             	label: 'Commits',
                 format: function(d){
 					repoOrderValue++;
-					if (repoOrderValue > tableRepo.size()-1){
+					if (repoOrderValue > filter_dic.tables.repo.size()-1){
 						repoOrderValue = 0;
 					}
 					return repo_grp.top(Infinity)[repoOrderValue].value;
@@ -194,13 +193,13 @@ function repo_update() {
 function org_update() {
     var orgOrderKey = -1;
 	var orgOrderValue = -1;
-	tableOrg
+	filter_dic.tables.org
 		.columns([
 			{
 				label: 'Organizations',
 				format: function(d){
 					orgOrderKey++;
-					if (orgOrderKey > tableOrg.size()-1){
+					if (orgOrderKey > filter_dic.tables.org.size()-1){
 						orgOrderKey = 0;
 					}
 					return org_grp.top(Infinity)[orgOrderKey].key;
@@ -210,7 +209,7 @@ function org_update() {
 				label: 'Commits',
 				format: function (d) {
 					orgOrderValue++;
-					if (orgOrderValue > tableOrg.size()-1){
+					if (orgOrderValue > filter_dic.tables.org.size()-1){
 						orgOrderValue = 0;
 					}
 					return org_grp.top(Infinity)[orgOrderValue].value;
@@ -222,13 +221,13 @@ function org_update() {
 function auth_update() {
     var authOrderKey = -1;
     var authOrderValue = -1;
-    tableAuth
+    filter_dic.tables.auth
         .columns([
             {
                 label: 'Authors',
                 format: function(d){
                     authOrderKey++;
-					if (authOrderKey > tableAuth.size()-1){
+					if (authOrderKey > filter_dic.tables.auth.size()-1){
 						authOrderKey = 0;
 					}
                     return auth_grp.top(Infinity)[authOrderKey].key;
@@ -238,7 +237,7 @@ function auth_update() {
                 label: 'Commits',
                 format: function (d) {
                     authOrderValue++;
-					if (authOrderValue > tableAuth.size()-1){
+					if (authOrderValue > filter_dic.tables.auth.size()-1){
 						authOrderValue = 0;
 					}
                     return auth_grp.top(Infinity)[authOrderValue].value;
@@ -250,14 +249,14 @@ function auth_update() {
 function table_update(type) {
     // If click MORE
     if (type == 'more') {
-        if (tableRepo.size() < repo_grp.top(Infinity).length) {
-            tableRepo.size(tableRepo.size()+1);
+        if (filter_dic.tables.repo.size() < repo_grp.top(Infinity).length) {
+            filter_dic.tables.repo.size(filter_dic.tables.repo.size()+1);
         }
-		if (tableOrg.size() < org_grp.top(Infinity).length) {
-            tableOrg.size(tableOrg.size()+1);
+		if (filter_dic.tables.org.size() < org_grp.top(Infinity).length) {
+            filter_dic.tables.org.size(filter_dic.tables.org.size()+1);
         }
-		if (tableAuth.size() < auth_grp.top(Infinity).length) {
-            tableAuth.size(tableAuth.size()+1);
+		if (filter_dic.tables.auth.size() < auth_grp.top(Infinity).length) {
+            filter_dic.tables.auth.size(filter_dic.tables.auth.size()+1);
         }
     }
 
@@ -271,8 +270,8 @@ function draw_messages_table () {
     var date_dim = ndx.dimension(function (d) {
         return d.date;
     });
-    table = dc.dataTable('#table', 'commitsTable');
-    table
+    filter_dic.tables.main = dc.dataTable('#table', 'commitsTable');
+    filter_dic.tables.main
         .dimension(date_dim)
         .group(function (d) {return '';})
         .size(7)
@@ -319,7 +318,7 @@ function draw_messages_table () {
         })
         .order(d3.descending);
 
-    table.on('renderlet', function(table) {
+    filter_dic.tables.main.on('renderlet', function(table) {
         table.selectAll('.dc-table-group').classed('info', true);
     });
 

@@ -2,11 +2,11 @@ function draw_charts () {
     ndx = crossfilter(dc_commits);
     var all = ndx.groupAll();
 
-    bot_dim = ndx.dimension(function(d){
+    filter_dic.dims.bot = ndx.dimension(function(d){
         return d.bot;
     });
-    bot_dim.filter(0);
-    proj_dim = ndx.dimension(function(d){
+    filter_dic.dims.bot.filter(0);
+    filter_dic.dims.proj = ndx.dimension(function(d){
         return ""+d.proj_name;
     });
 

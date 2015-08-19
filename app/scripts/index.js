@@ -16,8 +16,9 @@ var ndx;
 
 /* this variable is a dictionary where we save all changes and charts in our program */
 var filter_dic = {'activate_filt': {'repos': [], 'deves': [], 'orgs': [], 'projs': [], 'entriesdb': []}, 
-                  'charts': {},
-                  'dims': {}
+                  'charts': {'repo': 'repo_chart', 'org': 'org_chart', 'auth': 'auth_chart', 'commits': 'commits_chart', 'hours': 'hours_chart', 'tz': 'tz_chart'},
+                  'tables': {'repo': 'repo_table', 'org': 'org_table', 'auth': 'auth_table', 'main': 'main_table'},
+                  'dims': {'bot': 'bot_dim', 'proj': 'proj_dim'}
 };
 
 // the object for each charts
@@ -36,28 +37,6 @@ var proj_array = ['All'];
 // trigger for click in the pies chart
 var pie_click_event = new Event('table');
 var time_range_event = new Event('time');
-
-
-var bot_dim;
-var proj_dim;
-
-//var org_chart;
-//var repo_chart;
-//var auth_chart;
-
-
-
-
-//var repoFilters = [];
-//var deveFilters = [];
-//var compFilters = [];
-//var projFilters = [];
-//var entriesdb=[];
-
-
-
-
-
 
 // push in dc_commits the format for use crossfilter
 function load_commits (commits, orgs, repos, auths) {
@@ -123,18 +102,18 @@ document.addEventListener('table', function (e) {
 	table_update('click');
 	dc.redrawAll('other');
     dc.redrawAll('table');
-    dc.redrawAll('commitsTable')
+    dc.redrawAll('commitsTable');
 }, false);
 
 document.addEventListener('time', function (e) {
 	table_update('time');
 	dc.redrawAll('other');
     dc.redrawAll('table');
-    dc.redrawAll('commitsTable')
+    dc.redrawAll('commitsTable');
 }, false);
 
 $('#commitsTableMore').on('click', function () {
-    table.size(table.size()+4);
+    filter_dic.tables.main.size(filter_dic.tables.main.size()+4);
     dc.redrawAll('commitsTable');
 });
 
@@ -145,9 +124,9 @@ $('#tablesMore').on('click', function() {
 
 $(".checkbox").change(function() {
     if (this.checked) {
-        bot_dim.filterAll();
+        filter_dic.dims.bot.filterAll();
     } else {
-        bot_dim.filter(0);
+        filter_dic.dims.bot.filter(0);
     }
     dc.redrawAll('commitsTable');
     dc.redrawAll('other');
@@ -155,7 +134,7 @@ $(".checkbox").change(function() {
 });
 
 String.prototype.replaceAll = function(str1, str2, ignore){
-    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2) == "string")?str2.replace(/\$/g,"$$$$"):str2);
 }
 /**************** Generate URL by filters *****************/
 
@@ -169,47 +148,49 @@ Object.size = function(obj) {
 
 function writeURL(type){
 
-    var dic = {};
-    filter_dic.activate_filt.repos.forEach(function(element){
+    if (type == 'reset') {
+        var result = "";
+    } else {
+        var dic = {};
+        filter_dic.activate_filt.repos.forEach(function(element){
+	        if (dic["repo="] == undefined){
+		        dic["repo="] = [];
+	        }
+	        dic["repo="].push(element);
+        });
+        filter_dic.activate_filt.orgs.forEach(function(element){
+            if (dic["comp="] == undefined){
+	            dic["comp="] = [];
+	        }
+	        dic["comp="].push(element);
+        });
+        filter_dic.activate_filt.deves.forEach(function(element){
+            if (dic["deve="] == undefined){
+		        dic["deve="] = [];
+	        }
+	        dic["deve="].push(element)
+        });
 
-	if(dic["repo="] == undefined){
-		dic["repo="] = [];
-	}
-	dic["repo="].push(element);
-    })
-    filter_dic.activate_filt.orgs.forEach(function(element){
-        if(dic["comp="] == undefined){
-		dic["comp="] = [];
-	}
-	dic["comp="].push(element);
-    })
-    filter_dic.activate_filt.deves.forEach(function(element){
-        if(dic["deve="] == undefined){
-		    dic["deve="] = [];
-	    }
-	    dic["deve="].push(element)
-    });
+        if (db != ""){
+	        dic["db="] = [];
+	        dic["db="].push(db);
+        }
 
-    if(db != ""){
-	    dic["db="] = [];
-	    dic["db="].push(db);
+	    var result = "?";
+
+	    Object.keys(dic).forEach(function(element){
+		    result += element;
+		    dic[element].forEach(function(element2){
+			    if (dic[element].indexOf(element2) == 0){
+				    result += element2;
+			    } else {
+				    result += "+"+element2;
+			    }
+		    });
+
+		    result += "&";
+	    });
     }
-
-	var result = "?";
-
-	Object.keys(dic).forEach(function(element){
-		result += element;
-		dic[element].forEach(function(element2){
-			if(dic[element].indexOf(element2) == 0){
-				result += element2;
-			}else{
-				result += "+"+element2;
-			}
-		});
-
-		result += "&";
-	});
-
 	return result;
 
 }
@@ -217,68 +198,68 @@ function writeURL(type){
 /****************************** Read DB ******************************/
 
 function readDB(){
-    var arrayStrURL=document.URL.split("?")
-    if((arrayStrURL.length != 1 )&& (arrayStrURL[1]!="")){
-	    if(arrayStrURL[1].split("db=").length!=1){
-		    db=arrayStrURL[1].split("db=")[1].split("&")[0].split("+")[0]
-	    }else{
-		    db="";
+    var arrayStrURL=document.URL.split("?");
+    if ((arrayStrURL.length != 1 ) && (arrayStrURL[1]!="")){
+	    if (arrayStrURL[1].split("db=").length != 1){
+		    db = arrayStrURL[1].split("db=")[1].split("&")[0].split("+")[0]
+	    } else {
+		    db = "";
 	    }
     }
 }
 
 /********************** Read generated URL ****************************/
 function readURL(){
-    var arrayStrURL=document.URL.split("?")
-    if((arrayStrURL.length != 1 )&& (arrayStrURL[1]!="")){
-        var reset=false;
+    var arrayStrURL = document.URL.split("?");
+    if ((arrayStrURL.length != 1 )&& (arrayStrURL[1] != "")){
+        var reset = false;
         var repoStrUrl;
 
-	if(arrayStrURL[1].split("repo=").length!=1){
-		repoStrUrl=arrayStrURL[1].split("repo=")[1].split("&")[0].split("+")
-	}else{
-		repoStrUrl=[];
+	if (arrayStrURL[1].split("repo=").length != 1){
+		repoStrUrl = arrayStrURL[1].split("repo=")[1].split("&")[0].split("+");
+	} else {
+		repoStrUrl = [];
 	}
         var compStrUrl;
-	if(arrayStrURL[1].split("comp=").length!=1){
-		compStrUrl=arrayStrURL[1].split("comp=")[1].split("&")[0].split("+")
-	}else{
-		compStrUrl=[];
+	if (arrayStrURL[1].split("comp=").length != 1){
+		compStrUrl = arrayStrURL[1].split("comp=")[1].split("&")[0].split("+");
+	} else {
+		compStrUrl = [];
 	}
 
 	var deveStrUrl;
-	if(arrayStrURL[1].split("deve=").length!=1){
-		deveStrUrl=arrayStrURL[1].split("deve=")[1].split("&")[0].split("+")
-	}else{
-		deveStrUrl=[];
+	if (arrayStrURL[1].split("deve=").length!=1){
+		deveStrUrl = arrayStrURL[1].split("deve=")[1].split("&")[0].split("+");
+	} else {
+		deveStrUrl = [];
 	}
     //    var projStrUrl=arrayStrURL[1].split("proj=")[1].split("&")[0].split("+")
-        if(repoStrUrl.length!=0){
+        if (repoStrUrl.length != 0){
             repoStrUrl.forEach(function(element){
-                if(element.split("Others%20").length==2){
-                    reset=true;
+                if(element.split("Others%20").length == 2){
+                    reset = true;
                 }else{
-                    repo_chart.filter(unescape(element))
+                    filter_dic.charts.repo.filter(unescape(element));
                 }
-            })
+            });
         }
-        if(compStrUrl.length!=0){
+        if (compStrUrl.length != 0){
             compStrUrl.forEach(function(element){
-                if(element.split("Others%20").length==2){
-                    reset=true;
+                if(element.split("Others%20").length == 2){
+                    reset = true;
                 }else{
-                    org_chart.filter(unescape(element))
+                    filter_dic.charts.org.filter(unescape(element));
                 }
-            })
+            });
         }
-        if(deveStrUrl[0]!=""){
+        if (deveStrUrl[0] != ""){
             deveStrUrl.forEach(function(element){
-                if(element.split("Others%20").length==2){
-                    reset=true;
+                if(element.split("Others%20").length == 2){
+                    reset = true;
                 }else{
-                    auth_chart.filter(unescape(element))
+                    filter_dic.charts.auth.filter(unescape(element));
                 }
-            })
+            });
         }
     /*    if(projStrUrl[0]!=""){
             dimProj.filter(unescape(projStrUrl[0]))
@@ -306,15 +287,15 @@ $('#searchForm').keyup(function(e){
         if(entrie != ""){
             if(org_array.indexOf(entrie) != -1){
                 this.value = "";
-                org_chart.filter(entrie);
+                filter_dic.charts.org.filter(entrie);
                 document.dispatchEvent(pie_click_event);
             }else if(auth_array.indexOf(entrie) != -1){
                 this.value = "";
-                auth_chart.filter(entrie);
+                filter_dic.charts.auth.filter(entrie);
                 document.dispatchEvent(pie_click_event);
             }else if(repo_array.indexOf(entrie) != -1){
                 this.value = "";
-                repo_chart.filter(entrie);
+                filter_dic.charts.repo.filter(entrie);
                 document.dispatchEvent(pie_click_event);
             }else{
                 alert('No exist. Try again');
@@ -334,9 +315,9 @@ $("#projectForm").keyup(function(e){
         if(entrie != ""){
             this.value = "";
             if (entrie == 'All') {
-                proj_dim.filterAll();
+                filter_dic.dims.proj.filterAll();
             } else {
-                proj_dim.filter(entrie);
+                filter_dic.dims.proj.filter(entrie);
             }
             document.dispatchEvent(pie_click_event);
         }
@@ -345,8 +326,8 @@ $("#projectForm").keyup(function(e){
 
 function reset(){
     $.when(
-        bot_dim.filter(0),
-        proj_dim.filterAll(),
+        filter_dic.dims.bot.filter(0),
+        filter_dic.dims.proj.filterAll(),
         dc.filterAll('other'),
         dc.redrawAll('table'),
         dc.filterAll('commitsTable')
@@ -359,6 +340,8 @@ function reset(){
         $("#filterComp").empty();
         $("#filterDeve").empty();
         $("#filterRepo").empty();
+        var url = document.URL.split('db=')[1];
+        window.history.replaceState("string", "title", "dashboard.html?db="+url);
     });
 }
 
@@ -366,13 +349,13 @@ $(document).ready(function(){
 
     $.when(readDB()).done(function(){
         // download the JSON files from repository indicated in db
-		if(db!=""){
+		if (db!="") {
 			getting_commits =  $.getJSON('json/'+db+'/scm-commits.json');
 			getting_orgs = $.getJSON('json/'+db+'/scm-orgs.json');
 			getting_auths = $.getJSON('json/'+db+'/scm-persons.json');
 			getting_repos = $.getJSON('json/'+db+'/scm-repos.json');
 			getting_configuration = $.getJSON('json/'+db+'/config.json');
-		}else{
+		} else {
 			getting_commits =  $.getJSON('json/scm-commits.json');
 			getting_orgs = $.getJSON('json/scm-orgs.json');
 			getting_auths = $.getJSON('json/scm-persons.json');
@@ -412,6 +395,6 @@ $(document).ready(function(){
 	        $(':input:not(textarea)').keypress(function(event) {
 	            return event.keyCode != 13;
 	        });
-	    })
-    })
+	    });
+    });
 });
