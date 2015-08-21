@@ -81,7 +81,7 @@ function draw_pies () {
     });
 }
 
-// when you click in a part of the pie charts
+// when you click in a part of the pie charts and write a new URL and added the clicked entries.
 function filters (filter, div, array) {
     var i = 0;
     if(filter == null){

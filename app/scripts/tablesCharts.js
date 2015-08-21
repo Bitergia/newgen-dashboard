@@ -247,7 +247,7 @@ function auth_update() {
 }
 // When click otrher chart, the table must be update.
 function table_update(type) {
-    // If click MORE
+    // If click MORE on the tables(repo, org, auth)
     if (type == 'more') {
         if (filter_dic.tables.repo.size() < repo_grp.top(Infinity).length) {
             filter_dic.tables.repo.size(filter_dic.tables.repo.size()+1);
@@ -260,12 +260,13 @@ function table_update(type) {
         }
     }
 
+    // Update and redraw the tables.
     repo_update();
     org_update();
-    auth_update();	
+    auth_update();
 }
 
-// Draw main table when the messages its ready
+// Draw main table when the messages is ready
 function draw_messages_table () {
     var date_dim = ndx.dimension(function (d) {
         return d.date;
@@ -317,7 +318,6 @@ function draw_messages_table () {
             return d.date;
         })
         .order(d3.descending);
-
     filter_dic.tables.main.on('renderlet', function(table) {
         table.selectAll('.dc-table-group').classed('info', true);
     });

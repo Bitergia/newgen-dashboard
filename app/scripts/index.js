@@ -1,5 +1,5 @@
 // use to download the corret JSON files from the selected path
-var db="";
+var db = "";
 
 // use to download JSON files
 var getting_commits;
@@ -16,9 +16,9 @@ var ndx;
 
 /* this variable is a dictionary where we save all changes and charts in our program */
 var filter_dic = {'activate_filt': {'repos': [], 'deves': [], 'orgs': [], 'projs': [], 'entriesdb': []}, 
-                  'charts': {'repo': 'repo_chart', 'org': 'org_chart', 'auth': 'auth_chart', 'commits': 'commits_chart', 'hours': 'hours_chart', 'tz': 'tz_chart'},
-                  'tables': {'repo': 'repo_table', 'org': 'org_table', 'auth': 'auth_table', 'main': 'main_table'},
-                  'dims': {'bot': 'bot_dim', 'proj': 'proj_dim'}
+                  'charts': {'repo': {}, 'org': {}, 'auth': {}, 'commits': {}, 'hours': {}, 'tz': {}},
+                  'tables': {'repo': {}, 'org': {}, 'auth': {}, 'main': {}},
+                  'dims': {'bot': {}, 'proj': {}}
 };
 
 // the object for each charts
@@ -34,7 +34,7 @@ var auth_array = [];
 var org_array = [];
 var proj_array = ['All'];
 
-// trigger for click in the pies chart
+// trigger for click in the pie charts
 var pie_click_event = new Event('table');
 var time_range_event = new Event('time');
 
@@ -199,7 +199,7 @@ function writeURL(type){
 
 function readDB(){
     var arrayStrURL=document.URL.split("?");
-    if ((arrayStrURL.length != 1 ) && (arrayStrURL[1]!="")){
+    if ((arrayStrURL.length != 1 ) && (arrayStrURL[1] != "")){
 	    if (arrayStrURL[1].split("db=").length != 1){
 		    db = arrayStrURL[1].split("db=")[1].split("&")[0].split("+")[0]
 	    } else {
@@ -228,7 +228,7 @@ function readURL(){
 	}
 
 	var deveStrUrl;
-	if (arrayStrURL[1].split("deve=").length!=1){
+	if (arrayStrURL[1].split("deve=").length != 1){
 		deveStrUrl = arrayStrURL[1].split("deve=")[1].split("&")[0].split("+");
 	} else {
 		deveStrUrl = [];
@@ -340,6 +340,10 @@ function reset(){
         $("#filterComp").empty();
         $("#filterDeve").empty();
         $("#filterRepo").empty();
+        filter_dic.activate_filt.repo = [];
+        filter_dic.activate_filt.org = [];
+        filter_dic.activate_filt.deves = [];
+        filter_dic.activate_filt.projs = [];
         var url = document.URL.split('db=')[1];
         window.history.replaceState("string", "title", "dashboard.html?db="+url);
     });
