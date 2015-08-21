@@ -30,7 +30,7 @@ function repo_table() {
     filter_dic.tables.repo.on('renderlet', function(table) {
         table.selectAll('.dc-table-group').classed('info', true);
         table.selectAll(".dc-table-column._0").on("click", function(d){
-            filter_dic.charts.repo.filter($(this).html());
+            filter_dic.charts.repo.widget.getChart().filter($(this).html());
             document.dispatchEvent(pie_click_event);
         });
     });
@@ -68,7 +68,7 @@ function org_table() {
     filter_dic.tables.org.on('renderlet', function(table) {
         table.selectAll('.dc-table-group').classed('info', true);
         table.selectAll(".dc-table-column._0").on("click", function(d){
-            filter_dic.charts.org.filter($(this).html());
+            filter_dic.charts.org.widget.getChart().filter($(this).html());
             document.dispatchEvent(pie_click_event);
         });
     });
@@ -106,7 +106,7 @@ function auth_table() {
     filter_dic.tables.auth.on('renderlet', function(table) {
         table.selectAll('.dc-table-group').classed('info', true);
         table.selectAll(".dc-table-column._0").on("click", function(d){
-            filter_dic.charts.auth.filter($(this).html())
+            filter_dic.charts.auth.widget.getChart().filter($(this).html())
             document.dispatchEvent(pie_click_event);
         });
     });

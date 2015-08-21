@@ -239,7 +239,7 @@ function readURL(){
                 if(element.split("Others%20").length == 2){
                     reset = true;
                 }else{
-                    filter_dic.charts.repo.filter(unescape(element));
+                    filter_dic.charts.repo.widget.getChart().filter(unescape(element));
                 }
             });
         }
@@ -248,7 +248,7 @@ function readURL(){
                 if(element.split("Others%20").length == 2){
                     reset = true;
                 }else{
-                    filter_dic.charts.org.filter(unescape(element));
+                    filter_dic.charts.org.widget.getChart().filter(unescape(element));
                 }
             });
         }
@@ -257,7 +257,7 @@ function readURL(){
                 if(element.split("Others%20").length == 2){
                     reset = true;
                 }else{
-                    filter_dic.charts.auth.filter(unescape(element));
+                    filter_dic.charts.auth.widget.getChart().filter(unescape(element));
                 }
             });
         }
@@ -340,10 +340,10 @@ function reset(){
         $("#filterComp").empty();
         $("#filterDeve").empty();
         $("#filterRepo").empty();
-        filter_dic.activate_filt.repo = [];
-        filter_dic.activate_filt.org = [];
-        filter_dic.activate_filt.deves = [];
-        filter_dic.activate_filt.projs = [];
+        //filter_dic.activate_filt.repos = [];
+        //filter_dic.activate_filt.orgs = [];
+        //filter_dic.activate_filt.deves = [];
+        //filter_dic.activate_filt.projs = [];
         var url = document.URL.split('db=')[1];
         window.history.replaceState("string", "title", "dashboard.html?db="+url);
     });

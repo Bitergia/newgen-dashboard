@@ -25,6 +25,14 @@ function draw_pies () {
     /* All Charts */
     /**************/
     // Organization
+    var org_pie = new PieWidget('compPieChart', org_dim, org_grp, 'other', 10, 'filterComp', filter_dic.activate_filt.orgs);
+    var repo_pie = new PieWidget('repoPieChart', repo_dim, repo_grp, 'other', 10, 'filterRepo', filter_dic.activate_filt.repos);
+    var auth_pie = new PieWidget('authPieChart', auth_dim, auth_grp, 'other', 10, 'filterDeve', filter_dic.activate_filt.deves);
+
+    filter_dic.charts.org['widget'] = org_pie;
+    filter_dic.charts.repo['widget'] = repo_pie;
+    filter_dic.charts.auth['widget'] = auth_pie;
+/*
 	var width_org_chart = document.getElementById("compPieChart").offsetWidth;
     filter_dic.charts.org = dc.pieChart('#compPieChart', 'other');
     filter_dic.charts.org
@@ -79,6 +87,7 @@ function draw_pies () {
         document.dispatchEvent(pie_click_event);
         filters(filter, '#filterDeve', filter_dic.activate_filt.deves);
     });
+    */
 }
 
 // when you click in a part of the pie charts and write a new URL and added the clicked entries.
