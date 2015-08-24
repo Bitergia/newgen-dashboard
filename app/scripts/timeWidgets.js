@@ -1,40 +1,67 @@
-function TimeWidget(div, dim, group, chartGroup, type) {
+// (div, dimension, group, chart_group, <commits, hour, TZ>, <filter_from>, <filter_to>)
+function TimeWidget(div, dim, group, chartGroup, type, from, to) {
     Widget.call(this, div, dim, group, chartGroup);
 
     this.chartGroup = chartGroup;
-    this.withSize = document.getElementById(this.div).offsetWidth;
+    this.type = type;
+    this.widthSize = document.getElementById(this.div).offsetWidth;
 
-    var divFilter = divFilter;
-    var chart = dc.pieChart('#'+this.div, this.chartGroup);
+    var x_min;
+    var x_max;
+    if (this.type == 'commits') {
+        x_min = this.dim.bottom(1)[0].month;
+        x_max = this.dim.top(1)[0].month;
+    } else if (this.type == 'hour') {
+        x_min = 0;
+        x_max = 23;
+    } else if (this.type == 'TZ') {
+        x_min = -12;
+        x_max = 12;
+    }
 
-    var width_commits_chart = document.getElementById(this.div).offsetWidth;
-    var date_min = months_dim.bottom(1)[0].month;
-    var date_max = months_dim.top(1)[0].month;
     var chart = dc.barChart('#'+this.div, this.chartGroup);
     chart
-    	.width(width_commits_chart)
-	    .height(300)
+    	.width(this.widthSize)
+        .height(this.widthSize/1.618033/2.5)
 	    .transitionDuration(1000)
 	    .margins({top: 10, right: 50, bottom: 25, left: 50})
-	    .dimension(months_dim)
-	    .group(commmits_month)
-	    .x(d3.time.scale().domain([date_min,date_max]))
-	    .xUnits(d3.time.months)
-	    .elasticY(true)
-	    .xAxisLabel("Year");
-    chart.on("filtered", function(chart, filter) {
-		document.dispatchEvent(time_range_event);
-    });
-    if (type == 'commit') {
+	    .dimension(this.dim)
+	    .group(this.group)
+	    .x(d3.time.scale().domain([x_min, x_max]))
+	    .elasticY(true);
+    
+    if (this.type == 'commits') {
+        chart.xAxisLabel("Year");
+        chart.xUnits(d3.time.months);
         chart.on("filtered", function(chart, filter) {
             if(filter != null){
-                $("#filterFrom").text(" "+filter[0].getFullYear()+'-'+parseInt(filter[0].getMonth()+1)+" //");
-                $("#filterTo").text(" "+filter[1].getFullYear()+'-'+parseInt(filter[1].getMonth()+1));
+                $("#"+from).text(" "+filter[0].getFullYear()+'-'+parseInt(filter[0].getMonth()+1)+" //");
+                $("#"+to).text(" "+filter[1].getFullYear()+'-'+parseInt(filter[1].getMonth()+1));
                 document.dispatchEvent(time_range_event);
             }else{
-                $("#filterFrom").text(date_min.getFullYear()+'-'+parseInt(date_min.getMonth()+1)+" //");
-                $("#filterTo").text(" "+date_max.getFullYear()+'-'+parseInt(date_max.getMonth()+1));
+                $("#"+from).text(x_min.getFullYear()+'-'+parseInt(x_min.getMonth()+1)+" //");
+                $("#"+to).text(" "+x_max.getFullYear()+'-'+parseInt(x_max.getMonth()+1));
             }
         });
+    } else if (this.type == 'hour') {
+        chart.xAxisLabel("Hour of the day");
+        chart.x(d3.scale.linear().domain([x_min, x_max]));
+        chart.on("filtered", function(chart, filter) {
+		    document.dispatchEvent(time_range_event);
+        });
+    } else if (this.type == 'TZ') {
+        chart.xAxisLabel('Time Zone');
+        chart.x(d3.scale.linear().domain([x_min, x_max]));
+        chart.on("filtered", function(chart, filter) {
+		    document.dispatchEvent(time_range_event);
+        });
+    }
+
+    this.getChart = function() {
+        return chart;
+    }
+   
+    this.setChart = function(x) {
+        chart = x;
     }
 }

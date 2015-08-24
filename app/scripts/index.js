@@ -16,7 +16,7 @@ var ndx;
 
 /* this variable is a dictionary where we save all changes and charts in our program */
 var filter_dic = {'activate_filt': {'repos': [], 'deves': [], 'orgs': [], 'projs': [], 'entriesdb': []}, 
-                  'charts': {'repo': {}, 'org': {}, 'auth': {}, 'commits': {}, 'hours': {}, 'tz': {}},
+                  'charts': {'repo': {}, 'org': {}, 'auth': {}, 'commits': {}, 'hours': {}, 'TZ': {}},
                   'tables': {'repo': {}, 'org': {}, 'auth': {}, 'main': {}},
                   'dims': {'bot': {}, 'proj': {}}
 };

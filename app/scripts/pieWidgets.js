@@ -1,5 +1,5 @@
+// (div, dimension, group, chart_group, cap, div_filter, array)
 function PieWidget(div, dim, group, chartGroup, cap, divFilter, array) {
-        
     Widget.call(this, div, dim, group, chartGroup);
 
     this.chartGroup = chartGroup;
@@ -19,11 +19,7 @@ function PieWidget(div, dim, group, chartGroup, cap, divFilter, array) {
         .legend(dc.legend().x(0).y(3).itemHeight(20).gap(5))
         .ordering(function (d) { return -d.value; });
 
-
-           
-
     chart.on("filtered", function(chart, filter) {
-
         document.dispatchEvent(pie_click_event);
 
         var i = 0;
