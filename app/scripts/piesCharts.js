@@ -26,7 +26,9 @@ function draw_pies () {
     /**************/
     // Organization
     var org_pie = new PieWidget('compPieChart', org_dim, org_grp, 'other', 10, 'filterComp', filter_dic.activate_filt.orgs);
+    // Repository
     var repo_pie = new PieWidget('repoPieChart', repo_dim, repo_grp, 'other', 10, 'filterRepo', filter_dic.activate_filt.repos);
+    // Author
     var auth_pie = new PieWidget('authPieChart', auth_dim, auth_grp, 'other', 10, 'filterDeve', filter_dic.activate_filt.deves);
 
     filter_dic.charts.org['widget'] = org_pie;
@@ -89,7 +91,7 @@ function draw_pies () {
     });
     */
 }
-
+/*
 // when you click in a part of the pie charts and write a new URL and added the clicked entries.
 function filters (filter, div, array) {
     var i = 0;
@@ -123,3 +125,4 @@ function filters (filter, div, array) {
     }
     window.history.replaceState("object or string", "Title", writeURL());
 }
+*/
