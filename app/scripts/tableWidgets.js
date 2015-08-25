@@ -2,117 +2,100 @@ function TableWidget(div, dim, group, chartGroup, type) {
     Widget.call(this, div, dim, group, chartGroup);
 
     this.chartGroup = chartGroup;
-    this.type = type;
+    var type = type;
     
-    var min_rows_repo = 3;
-    if (group.top(Infinity).length < min_rows_repo) {
-        min_rows_repo = group.top(Infinity).length;
+    var min_rows = 3;
+    if (this.group.top(Infinity).length < min_rows) {
+        min_rows = this.group.top(Infinity).length;
     }
     var orderKey = -1;
     var orderValue = -1;
 
     table = dc.dataTable('#'+this.div, this.chartGroup);
     table
-        .dimension(dim)
+        .dimension(this.dim)
         .group(function (d) {return "";})
-        .size(min_rows_repo);
+        .size(min_rows)
+        .columns([
+            {
+            	label: type,
+                format: function(d){
+				    orderKey++;
+                    if (orderKey > min_rows-1) {
+                        orderKey = 0;
+                    }
+				    return group.top(Infinity)[orderKey].key;
+                }
+            },
+            {
+            	label: 'Commits',
+                format: function(d){
+				    orderValue++;
+                    if (orderValue > min_rows-1) {
+                        orderValue = 0;
+                    }
+				    return group.top(Infinity)[orderValue].value;
+                }
+            }
+        ]);
+    table.on('renderlet', function(table) {
+        table.selectAll('.dc-table-group').classed('info', true);
+        table.selectAll(".dc-table-column._0").on("click", function(d){
+            if (this.type == "Repositories") {
+                filter_dic.charts.repo.widget.getChart().filter($(this).html());
+            } else if (this.type == "Organizations") {
+                filter_dic.charts.org.widget.getChart().filter($(this).html());
+            } else if (this-type == "Authors") {
+                filter_dic.charts.auth.widget.getChart().filter($(this).html());
+            }
+            document.dispatchEvent(pie_click_event);
+        });
+    });
 
-    if (this.type == "repo") {
+    this.update = function (update_type) {
+        var orderKey = -1;
+	    var orderValue = -1;
         table.columns([
             {
-            	label: 'Repositories',
+            	label: type,
                 format: function(d){
-				    orderKey++;
-				    return group.top(Infinity)[orderKey].key;
+			        orderKey++;
+			        if (orderKey > table.size()-1){
+				        orderKey = 0;
+			        }
+                    if (update_type == 'repo') {
+				        return filter_dic.tables.repo.widget.group.top(Infinity)[orderKey].key;
+                    } else if (update_type == 'org') {
+                        return filter_dic.tables.org.widget.group.top(Infinity)[orderKey].key;
+                    } else if (update_type == 'auth') {
+                        return filter_dic.tables.auth.widget.group.top(Infinity)[orderKey].key;
+                    }
                 }
             },
             {
             	label: 'Commits',
                 format: function(d){
-				    orderValue++;
-				    return group.top(Infinity)[orderValue].value;
-                }
-            }
-        ]);
-    } else if (this.type == "org") {
-        table.columns([
-            {
-            	label: 'Organizations',
-                format: function(d){
-				    orderKey++;
-				    return group.top(Infinity)[orderKey].key;
-                }
-            },
-            {
-            	label: 'Commits',
-                format: function(d){
-				    orderValue++;
-				    return group.top(Infinity)[orderValue].value;
-                }
-            }
-        ]);
-    } else if (this.type == "auth") {
-        table.columns([
-            {
-            	label: 'Authors',
-                format: function(d){
-				    orderKey++;
-				    return group.top(Infinity)[orderKey].key;
-                }
-            },
-            {
-            	label: 'Commits',
-                format: function(d){
-				    orderValue++;
-				    return group.top(Infinity)[orderValue].value;
-                }
-            }
-        ]);
-    } else {
-        table.columns([
-            {
-	            label: 'Date',
-                format: function(d){
-                    return d.date; 
-                }
-            },
-            {
-                label: 'Message',
-                format: function(d) {
-                    return ""+d.message;
-                }
-            },
-            {
-                label: 'Developer',
-                format: function(d) {
-                    return d.auth_name;
-                }
-            },
-			{
-				label: 'Organization',
-				format: function(d) {
-					return d.org_name;
-				}
-			},
-			{
-				label: 'Repository',
-				format: function(d) {
-					return ""+d.repo_name;
-				}
-			},
-            {
-                label: 'TZ',
-                format: function(d) {
-                    return d.tz;
+			        orderValue++;
+			        if (orderValue > table.size()-1){
+				        orderValue = 0;
+			        }
+                    if (update_type == 'repo') {
+    			        return filter_dic.tables.repo.widget.group.top(Infinity)[orderValue].value;
+                    } else if (update_type == 'org') {
+                        return filter_dic.tables.org.widget.group.top(Infinity)[orderValue].value;
+                    } else if (update_type == 'auth') {
+                        return filter_dic.tables.auth.widget.group.top(Infinity)[orderValue].value;
+                    }
                 }
             }
         ]);
     }
-    filter_dic.tables.repo.on('renderlet', function(table) {
-        table.selectAll('.dc-table-group').classed('info', true);
-        table.selectAll(".dc-table-column._0").on("click", function(d){
-            filter_dic.charts.repo.widget.getChart().filter($(this).html());
-            document.dispatchEvent(pie_click_event);
-        });
-    });
+
+    this.getTable = function() {
+        return table;
+    }
+   
+    this.setTable = function(x) {
+        table = x;
+    }
 }

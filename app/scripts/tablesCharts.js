@@ -1,4 +1,4 @@
-function repo_table() {
+/*function repo_table() {
     var min_rows_repo = 3;
     if (repo_grp.top(Infinity).length < min_rows_repo){
         min_rows_repo = repo_grp.top(Infinity).length;
@@ -111,7 +111,7 @@ function auth_table() {
         });
     });
 }
-
+*/
 function draw_tables() {
     /*****************************/
     /* All dimensions and groups */
@@ -152,15 +152,22 @@ function draw_tables() {
     /**************/
     /* All tables */
     /**************/
-    repo_table();
+    // Repository
+    var table_repo = new TableWidget('tableRepo', repo_dim, repo_grp, 'table', 'Repositories');
+    filter_dic.tables.repo['widget'] = table_repo;
+//    repo_table();
 
     // Organization
-    org_table();
+    var table_org = new TableWidget('tableOrg', org_dim, org_grp, 'table', 'Organizations');
+    filter_dic.tables.org['widget'] = table_org;
+//    org_table();
 
     // Author
-    auth_table();
+    var table_auth = new TableWidget('tableAuth', auth_dim, auth_grp, 'table', 'Authors');
+    filter_dic.tables.auth['widget'] = table_auth;
+//    auth_table();
 }
-
+/*
 function repo_update() {
     var repoOrderKey = -1;
 	var repoOrderValue = -1;
@@ -244,26 +251,29 @@ function auth_update() {
                 }
             }
         ]);
-}
+}*/
 // When click otrher chart, the table must be update.
 function table_update(type) {
     // If click MORE on the tables(repo, org, auth)
     if (type == 'more') {
-        if (filter_dic.tables.repo.size() < repo_grp.top(Infinity).length) {
-            filter_dic.tables.repo.size(filter_dic.tables.repo.size()+1);
+        if (filter_dic.tables.repo.widget.getTable().size() < filter_dic.tables.repo.widget.group.top(Infinity).length) {
+            filter_dic.tables.repo.widget.getTable().size(filter_dic.tables.repo.widget.getTable().size()+1);
         }
-		if (filter_dic.tables.org.size() < org_grp.top(Infinity).length) {
-            filter_dic.tables.org.size(filter_dic.tables.org.size()+1);
+		if (filter_dic.tables.org.widget.getTable().size() < filter_dic.tables.org.widget.group.top(Infinity).length) {
+            filter_dic.tables.org.widget.getTable().size(filter_dic.tables.org.widget.getTable().size()+1);
         }
-		if (filter_dic.tables.auth.size() < auth_grp.top(Infinity).length) {
-            filter_dic.tables.auth.size(filter_dic.tables.auth.size()+1);
+		if (filter_dic.tables.auth.widget.getTable().size() < filter_dic.tables.auth.widget.group.top(Infinity).length) {
+            filter_dic.tables.auth.widget.getTable().size(filter_dic.tables.auth.widget.getTable().size()+1);
         }
     }
-
     // Update and redraw the tables.
-    repo_update();
-    org_update();
-    auth_update();
+    filter_dic.tables.repo['widget'].update('repo');
+//    repo_update();
+    filter_dic.tables.org['widget'].update('org');
+//    org_update();
+    filter_dic.tables.auth['widget'].update('auth');
+//    auth_update();
+//    dc.redrawAll('table');
 }
 
 // Draw main table when the messages is ready

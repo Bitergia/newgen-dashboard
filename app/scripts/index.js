@@ -390,8 +390,8 @@ $(document).ready(function(){
                 getting_messages = $.getJSON('json/scm-messages.json');
             }
 	        $.when(getting_messages).done(function (messages) {
-		            $("body").css("cursor", "default");
-		            $("#repoPieChart").css("background", "");
+	            $("body").css("cursor", "default");
+	            $("#repoPieChart").css("background", "");
 	            load_messages(messages);
 	            draw_messages_table(ndx);
 	        });
