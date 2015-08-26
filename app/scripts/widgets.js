@@ -4,7 +4,7 @@ function Widget (div,dim,group,chartGroup){
         this.dim=dim;
         this.group=group;
  
-        if(group==undefined){
+        if(chartGroup==undefined){
                 this.chartGroup="";
         }else{
                 this.chartGroup=chartGroup;
