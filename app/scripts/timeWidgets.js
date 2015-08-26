@@ -1,8 +1,7 @@
 // (div, dimension, group, chart_group, <commits, hour, TZ>, <filter_from>, <filter_to>)
 function TimeWidget(div, dim, group, chartGroup, type, from, to) {
-    Widget.call(this, div, dim, group, chartGroup);
-
-    this.chartGroup = chartGroup;
+    this.base = Widget;
+    this.base(div, dim, group, chartGroup);
     this.type = type;
     this.widthSize = document.getElementById(this.div).offsetWidth;
 
@@ -65,3 +64,4 @@ function TimeWidget(div, dim, group, chartGroup, type, from, to) {
         chart = x;
     }
 }
+TimeWidget.prototype = new Widget;

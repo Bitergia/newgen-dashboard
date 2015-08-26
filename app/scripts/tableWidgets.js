@@ -1,7 +1,7 @@
 function TableWidget(div, dim, group, chartGroup, type) {
-    Widget.call(this, div, dim, group, chartGroup);
+    this.base = Widget;
+    this.base(div, dim, group, chartGroup);
 
-    this.chartGroup = chartGroup;
     var type = type;
     
     var min_rows = 3;
@@ -11,7 +11,7 @@ function TableWidget(div, dim, group, chartGroup, type) {
     var orderKey = -1;
     var orderValue = -1;
 
-    table = dc.dataTable('#'+this.div, this.chartGroup);
+    var table = dc.dataTable('#'+this.div, this.chartGroup);
     table
         .dimension(this.dim)
         .group(function (d) {return "";})
@@ -41,18 +41,18 @@ function TableWidget(div, dim, group, chartGroup, type) {
     table.on('renderlet', function(table) {
         table.selectAll('.dc-table-group').classed('info', true);
         table.selectAll(".dc-table-column._0").on("click", function(d){
-            if (this.type == "Repositories") {
+            if (type == "Repositories") {
                 filter_dic.charts.repo.widget.getChart().filter($(this).html());
-            } else if (this.type == "Organizations") {
+            } else if (type == "Organizations") {
                 filter_dic.charts.org.widget.getChart().filter($(this).html());
-            } else if (this-type == "Authors") {
+            } else if (type == "Authors") {
                 filter_dic.charts.auth.widget.getChart().filter($(this).html());
             }
             document.dispatchEvent(pie_click_event);
         });
     });
 
-    this.update = function (update_type) {
+    this.update = function () {
         var orderKey = -1;
 	    var orderValue = -1;
         table.columns([
@@ -63,11 +63,11 @@ function TableWidget(div, dim, group, chartGroup, type) {
 			        if (orderKey > table.size()-1){
 				        orderKey = 0;
 			        }
-                    if (update_type == 'repo') {
+                    if (type == 'Repositories') {
 				        return filter_dic.tables.repo.widget.group.top(Infinity)[orderKey].key;
-                    } else if (update_type == 'org') {
+                    } else if (type == 'Organizations') {
                         return filter_dic.tables.org.widget.group.top(Infinity)[orderKey].key;
-                    } else if (update_type == 'auth') {
+                    } else if (type == 'Authors') {
                         return filter_dic.tables.auth.widget.group.top(Infinity)[orderKey].key;
                     }
                 }
@@ -79,11 +79,11 @@ function TableWidget(div, dim, group, chartGroup, type) {
 			        if (orderValue > table.size()-1){
 				        orderValue = 0;
 			        }
-                    if (update_type == 'repo') {
+                    if (type == 'Repositories') {
     			        return filter_dic.tables.repo.widget.group.top(Infinity)[orderValue].value;
-                    } else if (update_type == 'org') {
+                    } else if (type == 'Organizations') {
                         return filter_dic.tables.org.widget.group.top(Infinity)[orderValue].value;
-                    } else if (update_type == 'auth') {
+                    } else if (type == 'Authors') {
                         return filter_dic.tables.auth.widget.group.top(Infinity)[orderValue].value;
                     }
                 }
@@ -99,3 +99,4 @@ function TableWidget(div, dim, group, chartGroup, type) {
         table = x;
     }
 }
+TableWidget.prototype = new Widget;

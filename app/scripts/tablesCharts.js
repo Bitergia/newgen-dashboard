@@ -267,11 +267,11 @@ function table_update(type) {
         }
     }
     // Update and redraw the tables.
-    filter_dic.tables.repo['widget'].update('repo');
+    filter_dic.tables.repo['widget'].update();
 //    repo_update();
-    filter_dic.tables.org['widget'].update('org');
+    filter_dic.tables.org['widget'].update();
 //    org_update();
-    filter_dic.tables.auth['widget'].update('auth');
+    filter_dic.tables.auth['widget'].update();
 //    auth_update();
 //    dc.redrawAll('table');
 }
