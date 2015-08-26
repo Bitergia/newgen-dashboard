@@ -1,8 +1,10 @@
 function PieWidget(div, dim, group, chartGroup, cap, divFilter, array) {
         
-    Widget.call(this, div, dim, group, chartGroup);
-
-    this.chartGroup = chartGroup;
+    //Widget.call(this, div, dim, group, chartGroup);
+    
+    this.base = Widget;
+    this.base(div, dim, group, chartGroup)
+    
     this.cap = cap; 
     this.withSize = document.getElementById(this.div).offsetWidth;
 
@@ -67,3 +69,5 @@ function PieWidget(div, dim, group, chartGroup, cap, divFilter, array) {
         chart = x;
     }
 }
+
+PieWidget.prototype= new Widget;
