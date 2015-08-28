@@ -1,11 +1,10 @@
-// (div, dimension, group, chart_group, cap, div_filter, array)
-function PieWidget(div, dim, group, chartGroup, cap, divFilter, array) { 
-    //Widget.call(this, div, dim, group, chartGroup);
-    
+// (div, dimension, group, chart_group, cap, div_filter, type)
+function PieWidget(div, dim, group, chartGroup, cap, divFilter, type) {
     this.base = Widget;
     this.base(div, dim, group, chartGroup)
     this.cap = cap; 
     this.withSize = document.getElementById(this.div).offsetWidth;
+    var type= type;
 
     var divFilter = divFilter;
     var chart = dc.pieChart('#'+this.div, this.chartGroup);
@@ -22,34 +21,43 @@ function PieWidget(div, dim, group, chartGroup, cap, divFilter, array) {
 
     chart.on("filtered", function(chart, filter) {
         document.dispatchEvent(pie_click_event);
+	var dbFilt={};
+	if(type=="org"){
+		dbFilt.filter= filter_dic.activate_filt.orgs
+	}else if(type=="repo"){
+		dbFilt.filter= filter_dic.activate_filt.repos 
+	}else if(type=="auth"){
+		dbFilt.filter= filter_dic.activate_filt.deves
+	}
 
         var i = 0;
         if(filter == null) {
-            array = [];
+            dbFilt.filter = [];
         } else {
             $("#"+divFilter).empty();
             if(filter.constructor == Array) {
-                if(array.indexOf("Others ("+filter[0].length+")") == -1) {
-                    array.push("Others ("+filter[0].length+")");
+                if(dbFilt.filter.indexOf("Others ("+filter[0].length+")") == -1) {
+                   dbFilt.filter.push("Others ("+filter[0].length+")");
                 } else {
-                    array.splice(array.indexOf("Others ("+filter[0].length+")"),1);
+                    dbFilt.filter.splice(dbFilt.filter.indexOf("Others ("+filter[0].length+")"),1);
                 }
             } else {
                 if(filter != "Others") {
-                    if(array.indexOf(filter) == -1) {
-                        array.push(filter);
+
+                    if(dbFilt.filter.indexOf(filter) == -1) {
+                        dbFilt.filter.push(filter);
                     } else {
-                        array.splice(array.indexOf(filter),1);
+                        dbFilt.filter.splice(dbFilt.filter.indexOf(filter),1);
                     }
                 }
             }
             for(x = 0; x <= 5; x++){
-                if(array[x] != undefined){
-                    $("#"+divFilter).append('<span class="label label-default" id="filter-'+array[x].replaceAll(" ","0").replaceAll(".","0").replaceAll(",","0").replaceAll("(","0").replaceAll(")","0").replaceAll("?","0").replaceAll("'","0").replaceAll("@","0")+'"> '+array[x]+' </span>');
+                if(dbFilt.filter[x] != undefined){
+                    $("#"+divFilter).append('<span class="label label-default" id="filter-'+dbFilt.filter[x].replaceAll(" ","0").replaceAll(".","0").replaceAll(",","0").replaceAll("(","0").replaceAll(")","0").replaceAll("?","0").replaceAll("'","0").replaceAll("@","0")+'"> '+dbFilt.filter[x]+' </span>');
                 }
             }
-            if(array.length > 5) {
-                $("#"+divFilter).append('<span class="label label-default" id="filter-y"> '+(array.length-5)+' More </span>');
+            if(dbFilt.filter.length > 5) {
+                $("#"+divFilter).append('<span class="label label-default" id="filter-y"> '+(dbFilt.filter.length-5)+' More </span>');
             }
         }
         window.history.replaceState("object or string", "Title", writeURL());
@@ -63,10 +71,6 @@ function PieWidget(div, dim, group, chartGroup, cap, divFilter, array) {
     this.setChart = function(x) {
         chart = x;
     }
-}
-<<<<<<< HEAD
-PieWidget.prototype = new Widget;
-=======
 
-PieWidget.prototype= new Widget;
->>>>>>> 4b4aca96eb8adcf90d268047fef1a7e470a74e40
+}
+PieWidget.prototype = new Widget;
