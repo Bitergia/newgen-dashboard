@@ -60,6 +60,7 @@ function load_commits (commits, orgs, repos, auths) {
         auth_array.push(value[1]);
         filter_dic.activate_filt.entriesdb.push(value[1]);
     });
+    // Crossfilter and dc.js format
     commits.values.forEach(function (value) {
 	    var record = {}
 	    commits.names.forEach(function (name, index) {
@@ -113,7 +114,7 @@ document.addEventListener('time', function (e) {
 }, false);
 
 $('#commitsTableMore').on('click', function () {
-    filter_dic.tables.main.size(filter_dic.tables.main.size()+4);
+    filter_dic.tables.main.widget.getTable().size(filter_dic.tables.main.widget.getTable().size()+4);
     dc.redrawAll('commitsTable');
 });
 
@@ -340,10 +341,6 @@ function reset(){
         $("#filterComp").empty();
         $("#filterDeve").empty();
         $("#filterRepo").empty();
-        //filter_dic.activate_filt.repos = [];
-        //filter_dic.activate_filt.orgs = [];
-        //filter_dic.activate_filt.deves = [];
-        //filter_dic.activate_filt.projs = [];
         var url = document.URL.split('db=')[1];
         window.history.replaceState("string", "title", "dashboard.html?db="+url);
     });
