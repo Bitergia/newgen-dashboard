@@ -1,5 +1,4 @@
 function Widget (div, dim, group, chartGroup){
- 
     this.div = div;
     this.dim = dim;
     this.group = group;
@@ -13,5 +12,4 @@ function Widget (div, dim, group, chartGroup){
     this.draw = function() {
         dc.renderAll(this.chartGroup);
     }
- 
 }
