@@ -1,10 +1,14 @@
 // (div, dimension, group, chart_group, <commits, hour, TZ>, <filter_from>, <filter_to>)
 function TimeWidget(div, dim, group, chartGroup, type, from, to) {
+    //heritage parent object
     this.base = Widget;
     this.base(div, dim, group, chartGroup);
+    //type of time chart
     this.type = type;
+    // with of chart by the div
     this.widthSize = document.getElementById(this.div).offsetWidth;
 
+    //scalle of chart
     var x_min;
     var x_max;
     if (this.type == 'commits') {
@@ -18,6 +22,7 @@ function TimeWidget(div, dim, group, chartGroup, type, from, to) {
         x_max = 12;
     }
 
+    //object of chart
     var chart = dc.barChart('#'+this.div, this.chartGroup);
     chart
     	.width(this.widthSize)
@@ -29,6 +34,7 @@ function TimeWidget(div, dim, group, chartGroup, type, from, to) {
 	    .x(d3.time.scale().domain([x_min, x_max]))
 	    .elasticY(true);
     
+    //In this zone we see type of time chart to make the correct filter
     if (this.type == 'commits') {
         chart.xAxisLabel("Year");
         chart.xUnits(d3.time.months);
@@ -56,12 +62,15 @@ function TimeWidget(div, dim, group, chartGroup, type, from, to) {
         });
     }
 
+    //function to get the object chart
     this.getChart = function() {
         return chart;
     }
-   
+    //function to get the object chart
     this.setChart = function(x) {
         chart = x;
     }
 }
+
+//
 TimeWidget.prototype = new Widget;
