@@ -344,6 +344,8 @@ function reset(){
 /***************************** Zone of events ************************/
 /*********************************************************************/
 
+
+//listeners of tables to make the filter
 document.addEventListener('table', function (e) {
 	table_update('click');
 	dc.redrawAll('other');
@@ -358,6 +360,7 @@ document.addEventListener('time', function (e) {
     dc.redrawAll('commitsTable');
 }, false);
 
+// events of jquery to enlarge the tables
 $('#commitsTableMore').on('click', function () {
     filter_dic.tables.main.widget.getTable().size(filter_dic.tables.main.widget.getTable().size()+4);
     dc.redrawAll('commitsTable');
@@ -368,6 +371,8 @@ $('#tablesMore').on('click', function() {
     dc.redrawAll('table');
 });
 
+
+// checkbox to select filter by bots
 $(".checkbox").change(function() {
     if (this.checked) {
         filter_dic.dims.bot.filterAll();
@@ -379,6 +384,9 @@ $(".checkbox").change(function() {
     dc.redrawAll('table');
 });
 
+
+
+// searching box to make filters by any thing or project.
 
 $("#searchForm").autocomplete({
     source: filter_dic.activate_filt.entriesdb,
@@ -467,10 +475,13 @@ $(document).ready(function(){
             });            
 
 	        $("#companyName").text(configuration[0]["project_name"]);
-
+		
+		// quit the loading gif
 	        $.when(draw_charts()).done(function(){
 		        $('.relojito').remove();
 	        });
+	
+		//drawing messages table in last position 
             if(db != ""){
 		        getting_messages = $.getJSON('json/'+db+'/scm-messages.json');
             } else {

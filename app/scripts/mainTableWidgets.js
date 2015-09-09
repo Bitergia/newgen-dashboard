@@ -1,7 +1,12 @@
+
+//special table object for an specific case of data
 function MainTableWidget (div, dim, group, chartGroup) {
+
+    //heritage parent object
     this.base = Widget;
     this.base(div, dim, group, chartGroup);
 
+    //the object chart, in this case is a table
     var table = dc.dataTable('#'+this.div, this.chartGroup);
     table
         .dimension(this.dim)
@@ -53,12 +58,15 @@ function MainTableWidget (div, dim, group, chartGroup) {
         table.selectAll('.dc-table-group').classed('info', true);
     });
 
+    //function to get the object chart
     this.getTable = function() {
         return table;
     }
-   
+    //function to get the object chart
     this.setTable = function(x) {
         table = x;
     }
 }
+
+//the heritage
 MainTableWidget.prototype = new Widget; 

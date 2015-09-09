@@ -1,16 +1,23 @@
 function TableWidget(div, dim, group, chartGroup, type) {
+
+
+    //heritage parent object
     this.base = Widget;
     this.base(div, dim, group, chartGroup);
 
+    //type of table
     var type = type;
-    
+    //limit of rows
     var min_rows = 3;
     if (this.group.top(Infinity).length < min_rows) {
         min_rows = this.group.top(Infinity).length;
     }
+
+    //order of table, in this case top to bot
     var orderKey = -1;
     var orderValue = -1;
 
+    //the object chart
     var table = dc.dataTable('#'+this.div, this.chartGroup);
     table
         .dimension(this.dim)
@@ -18,6 +25,7 @@ function TableWidget(div, dim, group, chartGroup, type) {
         .size(min_rows)
         .columns([
             {
+		//the colums are make by the type of table
             	label: type,
                 format: function(d){
 				    orderKey++;
@@ -28,6 +36,7 @@ function TableWidget(div, dim, group, chartGroup, type) {
                 }
             },
             {
+		//the commits are in all this kind of tables
             	label: 'Commits',
                 format: function(d){
 				    orderValue++;
@@ -52,6 +61,7 @@ function TableWidget(div, dim, group, chartGroup, type) {
         });
     });
 
+    //update of table, we have to do it manually because this is a special kind of chart
     this.update = function () {
         var orderKey = -1;
 	    var orderValue = -1;
@@ -91,12 +101,15 @@ function TableWidget(div, dim, group, chartGroup, type) {
         ]);
     }
 
+    //function to get the object chart
     this.getTable = function() {
         return table;
     }
-   
+    //function to get the object chart
     this.setTable = function(x) {
         table = x;
     }
 }
+
+//the heritage
 TableWidget.prototype = new Widget;
