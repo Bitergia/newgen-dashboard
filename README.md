@@ -4,7 +4,7 @@ This is the proof of concept for a software development dashboard based on cross
 
 ## Installation
 
-If you want use it as standalone dashboard, clone the repository and:
+If you want use it as standalone dashboard, clone the repository and, assuming you already have npm working (and thus node too):
 
 ```bash
 $ npm install
@@ -18,4 +18,11 @@ If you want to create a _distributable_ dashboard:
 
 ```bash
 $ grunt build
+```
+
+In case you don't have bower or grunt installed, before the above commands, install them by:
+
+```bash
+$ sudo npm install -g bower
+$ sudo npm install -g grunt
 ```
