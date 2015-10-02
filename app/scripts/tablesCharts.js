@@ -55,14 +55,23 @@ function table_update(type) {
     // If click MORE on the tables(repo, org, auth)
     if (type == 'more') {
         // Need to see if the table have more entries.
-        if (filter_dic.tables.repo.widget.getTable().size() < filter_dic.tables.repo.widget.group.top(Infinity).length) {
-            filter_dic.tables.repo.widget.getTable().size(filter_dic.tables.repo.widget.getTable().size()+1);
+        for (var i=5; i>0; i--) {
+            if ((filter_dic.tables.repo.widget.group.top(Infinity).length - filter_dic.tables.repo.widget.getTable().size()) >= i) {
+                filter_dic.tables.repo.widget.getTable().size(filter_dic.tables.repo.widget.getTable().size()+i);
+                break;
+            }
         }
-		if (filter_dic.tables.org.widget.getTable().size() < filter_dic.tables.org.widget.group.top(Infinity).length) {
-            filter_dic.tables.org.widget.getTable().size(filter_dic.tables.org.widget.getTable().size()+1);
+        for (var i=5; i>0; i--) {
+            if ((filter_dic.tables.org.widget.group.top(Infinity).length - filter_dic.tables.org.widget.getTable().size()) >= i) {
+                filter_dic.tables.org.widget.getTable().size(filter_dic.tables.org.widget.getTable().size()+i);
+                break;
+            }
         }
-		if (filter_dic.tables.auth.widget.getTable().size() < filter_dic.tables.auth.widget.group.top(Infinity).length) {
-            filter_dic.tables.auth.widget.getTable().size(filter_dic.tables.auth.widget.getTable().size()+1);
+        for (var i=5; i>0; i--) {
+            if ((filter_dic.tables.auth.widget.group.top(Infinity).length - filter_dic.tables.auth.widget.getTable().size()) >= i) {
+                filter_dic.tables.auth.widget.getTable().size(filter_dic.tables.auth.widget.getTable().size()+i);
+                break;
+            }
         }
     }
     // Update and redraw the tables.
