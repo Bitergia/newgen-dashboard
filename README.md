@@ -26,3 +26,5 @@ In case you don't have bower or grunt installed, before the above commands, inst
 $ sudo npm install -g bower
 $ sudo npm install -g grunt
 ```
+
+The original scaffolding was done with [Yeoman](http://yeoman.io/).
