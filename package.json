@@ -1,7 +1,7 @@
 {
   "private": true,
   "devDependencies": {
-    "autoprefixer-core": "^5.2.1",
+    "autoprefixer": "^5.0.0",
     "grunt": "^0.4.5",
     "grunt-browser-sync": "^2.1.2",
     "grunt-concurrent": "^1.0.0",
